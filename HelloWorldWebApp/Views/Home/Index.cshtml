@@ -8,29 +8,17 @@
 
     <br />
     <h2 class="display-3">Team Members</h2>
-    <ul id="team-list">
+    <ul id="teamList">
         <li>Fineas</li>
         <li>Patrick</li>
         <li>Radu</li>
         <li>Tudor</li>
         <li>Emma</li>
     </ul>
-    <input id="team-name-field" type="text" />
-    <button id="add-team-button">Add to list</button>
+    <input id="teamNameField" type="text" />
+    <button id="addTeamButton">Add to list</button>
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(() => {
-            const teamNameField = $("#team-name-field")
-
-            $("#add-team-button").click(() => {
-                const newTeamName = teamNameField.val()
-            
-                $("#team-list").append(`<li>${newTeamName}</li>`)
-
-                teamNameField.val("")
-            })
-        })
-    </script>
+    <script type="text/javascript" src="~/js/Index.js"></script>
 }
