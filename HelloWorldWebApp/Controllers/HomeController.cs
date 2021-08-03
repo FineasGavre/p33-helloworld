@@ -1,4 +1,5 @@
-﻿using HelloWorldWebApp.Models;
+﻿using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,16 +12,25 @@ namespace HelloWorldWebApp.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ITeamMemberStore _teamMemberStore;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ITeamMemberStore teamMemberStore)
         {
             _logger = logger;
+            _teamMemberStore = teamMemberStore;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(new IndexViewModel { TeamMembers = _teamMemberStore.GetTeamMembers().ToList<string>() });
+        }
+
+        [HttpPost]
+        public IActionResult AddTeamMember([Bind("TeamMemberName")] AddTeamMemberInput addTeamMemberInput)
+        {
+            _teamMemberStore.AddTeamMember(addTeamMemberInput.TeamMemberName);
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()

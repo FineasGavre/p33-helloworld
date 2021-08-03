@@ -8,17 +8,15 @@
 
     <br />
     <h2 class="display-3">Team Members</h2>
-    <ul id="teamList">
-        <li>Fineas</li>
-        <li>Patrick</li>
-        <li>Radu</li>
-        <li>Tudor</li>
-        <li>Emma</li>
+    <ul>
+        @foreach (var teamMember in Model.TeamMembers)
+        {
+            <li>@teamMember</li>
+        }
     </ul>
-    <input id="teamNameField" type="text" />
-    <button id="addTeamButton">Add to list</button>
+    <form method="post" action="/Home/AddTeamMember">
+        <input name="TeamMemberName" type="text" />
+        <button type="submit">Add to list</button>
+    </form>
 </div>
 
-@section Scripts {
-    <script type="text/javascript" src="~/js/Index.js"></script>
-}
