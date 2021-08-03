@@ -23,7 +23,7 @@ namespace HelloWorldWebApp.Controllers
 
         public IActionResult Index()
         {
-            return View(new IndexViewModel { TeamMembers = _teamMemberStore.GetTeamMembers().ToList<string>() });
+            return View(new IndexViewModel { TeamMembers = _teamMemberStore.GetTeamMembers() });
         }
 
         [HttpPost]
