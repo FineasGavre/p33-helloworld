@@ -35,7 +35,16 @@ namespace HelloWorldWebApp.Controllers
         /// <returns>Index.cshtml view with model.</returns>
         public IActionResult Index()
         {
-            return View(new IndexViewModel { TeamMembers = teamMemberStore.GetTeamMembers() });
+            return View();
+        }
+
+        /// <summary>
+        /// GetTeamMembers action.
+        /// </summary>
+        /// <returns>JSON object that contains TeamMember[].</returns>
+        public IActionResult GetTeamMembers()
+        {
+            return new JsonResult(new IndexViewModel { TeamMembers = teamMemberStore.GetTeamMembers() });
         }
 
         /// <summary>
