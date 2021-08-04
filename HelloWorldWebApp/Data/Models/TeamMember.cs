@@ -10,12 +10,12 @@ namespace HelloWorldWebApp.Data.Models
     public class TeamMember
     {
         /// <summary>
-        /// Entity Id
+        /// Gets or sets the entity Id.
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// TeamMember Name
+        /// Gets or sets the teammember's Name.
         /// </summary>
         public string Name { get; set; }
     }

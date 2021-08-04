@@ -3,7 +3,9 @@
 // </copyright>
 
 using System.Diagnostics;
+using System.Linq;
 using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Data.Models;
 using HelloWorldWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,18 +17,18 @@ namespace HelloWorldWebApp.Controllers
     /// </summary>
     public class HomeController : Controller
     {
-        private readonly ITeamMemberStore teamMemberStore;
         private readonly ILogger<HomeController> logger;
+        private readonly ITeamMemberService teamMemberService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeController"/> class.
         /// </summary>
         /// <param name="logger">App Logger.</param>
-        /// <param name="teamMemberStore">TeamMember store.</param>
-        public HomeController(ILogger<HomeController> logger, ITeamMemberStore teamMemberStore)
+        /// <param name="teamMemberService">Team Member service.</param>
+        public HomeController(ILogger<HomeController> logger, ITeamMemberService teamMemberService)
         {
             this.logger = logger;
-            this.teamMemberStore = teamMemberStore;
+            this.teamMemberService = teamMemberService;
         }
 
         /// <summary>
@@ -44,7 +46,9 @@ namespace HelloWorldWebApp.Controllers
         /// <returns>JSON object that contains TeamMember[].</returns>
         public IActionResult GetTeamMembers()
         {
-            return new JsonResult(new IndexViewModel { TeamMembers = teamMemberStore.GetTeamMembers() });
+            var teamMembers = teamMemberService.GetTeamMembers().Select(teamMember => teamMember.Name).ToList();
+
+            return new JsonResult(new IndexViewModel { TeamMembers = teamMembers });
         }
 
         /// <summary>
@@ -55,7 +59,7 @@ namespace HelloWorldWebApp.Controllers
         [HttpPost]
         public IActionResult AddTeamMember([Bind("TeamMemberName")] AddTeamMemberInput addTeamMemberInput)
         {
-            teamMemberStore.AddTeamMember(addTeamMemberInput.TeamMemberName);
+            teamMemberService.AddTeamMember(new TeamMember { Name = addTeamMemberInput.TeamMemberName });
             return RedirectToAction(nameof(Index));
         }
 
