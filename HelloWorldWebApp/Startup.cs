@@ -41,7 +41,7 @@ namespace HelloWorldWebApp
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddSingleton<ITeamMemberService, TeamMemberService>();
+            services.AddScoped<ITeamMemberService, TeamMemberService>();
         }
 
         /// <summary>

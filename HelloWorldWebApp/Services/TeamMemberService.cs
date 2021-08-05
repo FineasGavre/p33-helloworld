@@ -26,5 +26,17 @@ namespace HelloWorldWebApp
             context.TeamMembers.Add(teamMember);
             context.SaveChanges();
         }
+
+        public void UpdateTeamMember(TeamMember teamMember)
+        {
+            context.TeamMembers.Update(teamMember);
+            context.SaveChanges();
+        }
+
+        public void DeleteTeamMember(int id)
+        {
+            context.TeamMembers.Remove(context.TeamMembers.Find(id));
+            context.SaveChanges();
+        }
     }
 }

@@ -46,9 +46,9 @@ namespace HelloWorldWebApp.Controllers
         /// <returns>JSON object that contains TeamMember[].</returns>
         public IActionResult GetTeamMembers()
         {
-            var teamMembers = teamMemberService.GetTeamMembers().Select(teamMember => teamMember.Name).ToList();
+            var teamMembers = teamMemberService.GetTeamMembers().ToList();
 
-            return new JsonResult(new IndexViewModel { TeamMembers = teamMembers });
+            return new JsonResult(teamMembers);
         }
 
         /// <summary>
@@ -61,6 +61,13 @@ namespace HelloWorldWebApp.Controllers
         {
             teamMemberService.AddTeamMember(new TeamMember { Name = addTeamMemberInput.TeamMemberName });
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteTeamMember(int id)
+        {
+            teamMemberService.DeleteTeamMember(id);
+            return Ok();
         }
 
         /// <summary>
