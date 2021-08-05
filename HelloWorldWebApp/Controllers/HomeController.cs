@@ -63,6 +63,13 @@ namespace HelloWorldWebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPut]
+        public IActionResult UpdateTeamMember(int id, string name)
+        {
+            teamMemberService.UpdateTeamMember(new TeamMember { Id = id, Name = name });
+            return Ok();
+        }
+
         [HttpDelete]
         public IActionResult DeleteTeamMember(int id)
         {

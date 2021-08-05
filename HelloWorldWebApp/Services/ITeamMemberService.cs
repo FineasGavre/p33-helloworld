@@ -8,5 +8,6 @@ namespace HelloWorldWebApp
         void AddTeamMember(TeamMember teamMember);
         void DeleteTeamMember(int id);
         IList<TeamMember> GetTeamMembers();
+        void UpdateTeamMember(TeamMember teamMember);
     }
 }
