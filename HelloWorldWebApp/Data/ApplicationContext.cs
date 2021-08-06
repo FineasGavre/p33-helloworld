@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="ApplicationContext.cs" company="PRINCIPAL33">
+// Copyright (c) PRINCIPAL33. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HelloWorldWebApp.Data
 {
+    /// <summary>
+    /// DbContext for the current Application.
+    /// </summary>
     public class ApplicationContext : DbContext
     {
         /// <summary>
@@ -23,6 +30,10 @@ namespace HelloWorldWebApp.Data
         /// </summary>
         public DbSet<TeamMember> TeamMembers { get; set; }
 
+        /// <summary>
+        /// Override OnModelCreating from DbContext to link Entity to table.
+        /// </summary>
+        /// <param name="modelBuilder">ModelBuilder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TeamMember>().ToTable("TeamMembers");

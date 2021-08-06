@@ -60,9 +60,15 @@ namespace HelloWorldWebApp.Controllers
         public IActionResult AddTeamMember([Bind("TeamMemberName")] AddTeamMemberInput addTeamMemberInput)
         {
             teamMemberService.AddTeamMember(new TeamMember { Name = addTeamMemberInput.TeamMemberName });
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
 
+        /// <summary>
+        /// UpdateTeamMember action.
+        /// </summary>
+        /// <param name="id">Id of the TeamMember to be updated.</param>
+        /// <param name="name">Name of the TeamMember to be updated.</param>
+        /// <returns>HTTP Status code 200.</returns>
         [HttpPut]
         public IActionResult UpdateTeamMember(int id, string name)
         {
@@ -70,6 +76,11 @@ namespace HelloWorldWebApp.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// DeleteTeamMember action.
+        /// </summary>
+        /// <param name="id">Id of the TeamMember to be deleted.</param>
+        /// <returns>HTTP Status code 200.</returns>
         [HttpDelete]
         public IActionResult DeleteTeamMember(int id)
         {
