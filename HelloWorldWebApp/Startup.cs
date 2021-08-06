@@ -5,6 +5,7 @@
 using HelloWorldWebApp.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,8 +37,11 @@ namespace HelloWorldWebApp
         /// <param name="services">Services collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ITeamMemberStore>(new TeamMemberStore());
             services.AddControllersWithViews();
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.AddScoped<ITeamMemberService, TeamMemberService>();
         }
 
         /// <summary>
@@ -50,6 +54,7 @@ namespace HelloWorldWebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
