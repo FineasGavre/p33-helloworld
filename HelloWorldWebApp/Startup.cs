@@ -55,6 +55,7 @@ namespace HelloWorldWebApp
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
+                app.UseBrowserLink();
             }
             else
             {
