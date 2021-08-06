@@ -16,6 +16,29 @@
     <button id="clearButton">Clear</button>
 </div>
 
+@section modalWindows {
+    <div class="modal fade" id="editClassmate" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Classmate</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Name
+                        <input id="classmateName" title="Name" type="text">
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="editSubmit" type="button" class="btn" data-dismiss="modal">Submit</button>
+                    <button id="editCancel" type="button" class="btn" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @section Scripts {
     <script type="text/javascript" src="~/js/Index.js"></script>
 }

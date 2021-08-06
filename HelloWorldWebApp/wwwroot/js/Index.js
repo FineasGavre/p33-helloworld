@@ -8,6 +8,8 @@ $(document).ready(() => {
 
     $('#teamMemberInput').keydown(onInputChange)
     $('#teamMemberInput').change(onInputChange)
+
+    $('#editSubmit').click(onEditModalSubmit)
 })
 
 function onClearButton() {
@@ -22,16 +24,32 @@ function onInputChange() {
     }
 }
 
-function onEditButton() {
-    const newName = prompt('Please enter the new name:')
+function onEditModalSubmit() {
+    const newName = $('#classmateName').val()
+    const id = $('#editClassmate').attr('data-member-id')
 
-    putTeamMember($(this).parent().attr('data-member-id'), newName)
+    if (newName === '' || newName === null) {
+        return
+    }
+
+    putTeamMember(id, newName)
         .then(() => {
-            $(this).siblings('[data-name]').text(newName)
+            $(`[data-member-id=${id}] [data-name]`).text(newName)
         })
         .catch(err => {
             console.log(err)
         })
+}
+
+function onEditButton() {
+    const targetMemberTag = $(this).parent()
+    const id = targetMemberTag.attr('data-member-id')
+    const currentName = targetMemberTag.find("[data-name]").text()
+    const modalTag = $('#editClassmate')
+
+    $('#classmateName').val(currentName)
+    modalTag.attr("data-member-id", id)
+    modalTag.modal('show')
 }
 
 function onDeleteButton() {
