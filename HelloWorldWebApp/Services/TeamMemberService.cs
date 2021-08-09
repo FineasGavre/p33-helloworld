@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,42 +17,57 @@ namespace HelloWorldWebApp
     /// </summary>
     public class TeamMemberService : ITeamMemberService
     {
-        private readonly ApplicationContext context;
+        private ConcurrentDictionary<int, TeamMember> teamMembers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TeamMemberService"/> class.
         /// </summary>
-        /// <param name="context">DI ApplicationContext database.</param>
-        public TeamMemberService(ApplicationContext context)
+        public TeamMemberService()
         {
-            this.context = context;
+            teamMembers = new ConcurrentDictionary<int, TeamMember>();
         }
 
         /// <inheritdoc/>
         public IList<TeamMember> GetTeamMembers()
         {
-            return context.TeamMembers.ToList();
+            return teamMembers.Values.ToList();
         }
 
         /// <inheritdoc/>
         public void AddTeamMember(TeamMember teamMember)
         {
-            context.TeamMembers.Add(teamMember);
-            context.SaveChanges();
+            teamMember.Id = findNextId();
+            teamMembers.AddOrUpdate(teamMember.Id, teamMember, (id, existingTm) =>
+            {
+                existingTm.Name = teamMember.Name;
+                return existingTm;
+            });
         }
 
         /// <inheritdoc/>
         public void UpdateTeamMember(TeamMember teamMember)
         {
-            context.TeamMembers.Update(teamMember);
-            context.SaveChanges();
+            teamMembers.AddOrUpdate(teamMember.Id, teamMember, (id, existingTm) =>
+            {
+                existingTm.Name = teamMember.Name;
+                return existingTm;
+            });
         }
 
         /// <inheritdoc/>
         public void DeleteTeamMember(int id)
         {
-            context.TeamMembers.Remove(context.TeamMembers.Find(id));
-            context.SaveChanges();
+            teamMembers.Remove(id, out _);
+        }
+
+        private int findNextId()
+        {
+            if (teamMembers.Count == 0)
+            {
+                return 1;
+            }
+
+            return teamMembers.Keys.Max() + 1;
         }
     }
 }

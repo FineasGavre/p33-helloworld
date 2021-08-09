@@ -38,10 +38,9 @@ namespace HelloWorldWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddScoped<ITeamMemberService, TeamMemberService>();
+            services.AddSingleton<ITeamMemberService, TeamMemberService>();
         }
 
         /// <summary>
