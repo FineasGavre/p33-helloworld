@@ -30,6 +30,10 @@ namespace HelloWorldWebApp.Data
         /// </summary>
         public DbSet<TeamMember> TeamMembers { get; set; }
 
+        public DbSet<Intern> Interns { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<LibraryResource> LibraryResources { get; set; }
+
         /// <summary>
         /// Override OnModelCreating from DbContext to link Entity to table.
         /// </summary>
@@ -37,6 +41,9 @@ namespace HelloWorldWebApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TeamMember>().ToTable("TeamMembers");
+            modelBuilder.Entity<Intern>().ToTable("Interns");
+            modelBuilder.Entity<Skill>().ToTable("Skills");
+            modelBuilder.Entity<LibraryResource>().ToTable("LibraryResources");
         }
     }
 }

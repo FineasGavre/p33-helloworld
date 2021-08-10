@@ -4,14 +4,16 @@ using HelloWorldWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HelloWorldWebApp.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210810093031_AddedInternsSkillsLibResources")]
+    partial class AddedInternsSkillsLibResources
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +55,7 @@ namespace HelloWorldWebApp.Migrations
                     b.Property<string>("Recommendation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SkillId")
+                    b.Property<int?>("SkillId")
                         .HasColumnType("int");
 
                     b.Property<string>("URL")
@@ -76,7 +78,7 @@ namespace HelloWorldWebApp.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("InternId")
+                    b.Property<int?>("InternId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -109,24 +111,16 @@ namespace HelloWorldWebApp.Migrations
 
             modelBuilder.Entity("HelloWorldWebApp.Data.Models.LibraryResource", b =>
                 {
-                    b.HasOne("HelloWorldWebApp.Data.Models.Skill", "Skill")
+                    b.HasOne("HelloWorldWebApp.Data.Models.Skill", null)
                         .WithMany("LibraryResources")
-                        .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Skill");
+                        .HasForeignKey("SkillId");
                 });
 
             modelBuilder.Entity("HelloWorldWebApp.Data.Models.Skill", b =>
                 {
-                    b.HasOne("HelloWorldWebApp.Data.Models.Intern", "Intern")
+                    b.HasOne("HelloWorldWebApp.Data.Models.Intern", null)
                         .WithMany("Skills")
-                        .HasForeignKey("InternId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Intern");
+                        .HasForeignKey("InternId");
                 });
 
             modelBuilder.Entity("HelloWorldWebApp.Data.Models.Intern", b =>
