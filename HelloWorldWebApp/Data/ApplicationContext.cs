@@ -44,6 +44,66 @@ namespace HelloWorldWebApp.Data
             modelBuilder.Entity<Intern>().ToTable("Interns");
             modelBuilder.Entity<Skill>().ToTable("Skills");
             modelBuilder.Entity<LibraryResource>().ToTable("LibraryResources");
+
+            Seed(modelBuilder);
+        }
+
+        private void Seed(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Intern>().HasData(
+                new Intern
+                {
+                    Id = 1,
+                    Name = "Fineas Gavre",
+                    Birthdate = new DateTime(2000, 8, 8),
+                    Email = "fineasgavre@gmail.com",
+                },
+                new Intern
+                {
+                    Id = 2,
+                    Name = "Andrei Popescu",
+                    Birthdate = new DateTime(2001, 1, 1),
+                    Email = "andreipopescu@gmail.com",
+                }
+            );
+
+            modelBuilder.Entity<Skill>().HasData(
+                new Skill
+                {
+                    Id = 1,
+                    Name = "Skill1",
+                    Description = "Nice skill 1",
+                    SkillMatrixUrl = "https://url.here",
+                    InternId = 1,
+                },
+                new Skill
+                {
+                    Id = 2,
+                    Name = "Skill2",
+                    Description = "Nice skill 2",
+                    SkillMatrixUrl = "https://url2.here",
+                    InternId = 2,
+                }
+            );
+
+            modelBuilder.Entity<LibraryResource>().HasData(
+                new LibraryResource
+                {
+                    Id = 1,
+                    Name = "LibraryResource",
+                    Recommendation = "Good",
+                    URL = "https://libresources.com",
+                    SkillId = 1,
+                },
+                new LibraryResource
+                {
+                    Id = 2,
+                    Name = "LibraryResource2",
+                    Recommendation = "Bad",
+                    URL = "https://libresources2.com",
+                    SkillId = 2,
+                }
+            );
         }
     }
 }
