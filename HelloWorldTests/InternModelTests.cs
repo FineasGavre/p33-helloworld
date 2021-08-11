@@ -1,4 +1,5 @@
 ﻿using HelloWorldWebApp.Data.Models;
+using Pose;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +18,22 @@ namespace HelloWorldTests
         [Fact]
         public void CheckIfAgeIsCorrect()
         {
-            // Assume
-            var intern = new Intern
+            var dateTimeShim = Shim.Replace(() => DateTime.Now).With(() => new DateTime(2021, 08, 12));
+
+            PoseContext.Isolate(() =>
             {
-                Birthdate = new DateTime(2000, 8, 8)
-            };
+                // Arrange
+                var intern = new Intern
+                {
+                    Birthdate = new DateTime(2000, 8, 8)
+                };
 
-            // Act
-            var age = intern.GetAge();
+                // Act
+                var age = intern.GetAge();
 
-            // Assert
-            Assert.Equal(21, age);
+                // Assert
+                Assert.Equal(21, age);
+            });
         }
     }
 }
