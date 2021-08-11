@@ -20,6 +20,9 @@
                 @Html.DisplayNameFor(model => model.Birthdate)
             </th>
             <th>
+                Age
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th></th>
@@ -33,6 +36,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Birthdate)
+            </td>
+            <td>
+                @item.GetAge()
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
