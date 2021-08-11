@@ -75,13 +75,14 @@ namespace HelloWorldTests
 
             // Assume
             var teamService = new TeamMemberService(context);
+            var expectedCount = teamService.GetTeamMembers().Count - 1;
             var teamMember = teamService.GetTeamMembers()[0];
 
             // Act
             teamService.DeleteTeamMember(teamMember.Id);
 
             // Assert
-            Assert.Equal(3, teamService.GetTeamMembers().Count);
+            Assert.Equal(expectedCount, teamService.GetTeamMembers().Count);
             Assert.DoesNotContain(teamMember, teamService.GetTeamMembers());
         }
 
@@ -92,6 +93,7 @@ namespace HelloWorldTests
 
             // Assume
             var teamService = new TeamMemberService(context);
+            var expectedCount = teamService.GetTeamMembers().Count + 1;
             var teamMember = new TeamMember
             {
                 Name = "TestMember"
@@ -101,7 +103,7 @@ namespace HelloWorldTests
             teamService.AddTeamMember(teamMember);
 
             // Assert
-            Assert.Equal(5, teamService.GetTeamMembers().Count);
+            Assert.Equal(expectedCount, teamService.GetTeamMembers().Count);
             Assert.Contains(teamMember, teamService.GetTeamMembers());
         }
 
