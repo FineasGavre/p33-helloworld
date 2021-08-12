@@ -8,7 +8,7 @@ namespace HelloWorldWebApp.Models.Weather
     public class DailyWeather
     {
         public DateTimeOffset Date { get; set; }
-        public float Temperature { get; set; }
+        public double Temperature { get; set; }
         public IList<WeatherType> WeatherTypes { get; set; }
     }
 }
