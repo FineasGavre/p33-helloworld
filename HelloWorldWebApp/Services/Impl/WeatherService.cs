@@ -29,9 +29,14 @@ namespace HelloWorldWebApp.Services.Impl
         {
             var latitude = "46.7700";
             var longitude = "23.5800";
-            var response = await httpClient.GetStringAsync($"http://api.openweathermap.org/data/2.5/onecall?lat={latitude}&lon={longitude}&exclude=current,minutely,hourly,alerts&units=metric&appid={API_KEY}");
+            var response = await httpClient.GetStringAsync($"http://api.openweathermap.org/data/2.5/onecall?lat={latitude}&lon={longitude}&exclude=current,minutely,hourly,alerts&appid={API_KEY}");
 
-            var weatherJsonResponse = JObject.Parse(response);
+            return ParseWeatherForecastResponse(response);
+        }
+
+        public IEnumerable<DailyWeather> ParseWeatherForecastResponse(string jsonResponse)
+        {
+            var weatherJsonResponse = JObject.Parse(jsonResponse);
             var dailyForecastArray = weatherJsonResponse.SelectToken("daily");
 
             var dailyWeather = dailyForecastArray.Select(forecast =>
@@ -40,7 +45,8 @@ namespace HelloWorldWebApp.Services.Impl
                 var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(dateTimeUnixFormat);
 
                 var temperatureObject = forecast.SelectToken("temp");
-                var temperature = temperatureObject.Value<float>("day");
+                var temperatureKelvin = temperatureObject.Value<double>("day");
+                var temperature = ConvertKelvinToCelsius(temperatureKelvin);
 
                 var weatherTypes = forecast.SelectToken("weather")
                     .Select(type => WeatherTypeConverter.GetWeatherTypeFromWeatherCode(type.Value<int>("id")))
@@ -55,6 +61,11 @@ namespace HelloWorldWebApp.Services.Impl
             });
 
             return dailyWeather;
+        }
+
+        public double ConvertKelvinToCelsius(double kelvinTemperature)
+        {
+            return kelvinTemperature - 273.15;
         }
     }
 }
