@@ -13,9 +13,14 @@ namespace HelloWorldTests
 {
     public class TeamCompositionServiceTests
     {
-        private readonly Mock<ITeamMemberService> teamMemberService = new Mock<ITeamMemberService>();
+        private Mock<ITeamMemberService> teamMemberService = new Mock<ITeamMemberService>();
 
         public TeamCompositionServiceTests()
+        {
+            Setup();
+        }
+
+        private void Setup()
         {
             teamMemberService.Setup(s => s.GetTeamMembers()).Returns(new List<TeamMember>
             {
@@ -48,6 +53,7 @@ namespace HelloWorldTests
 
             // Assert
             Assert.Equal("FRA", initials);
+            teamMemberService.Verify(_ => _.GetTeamMembers(), Times.AtMostOnce());
         }
     }
 }
