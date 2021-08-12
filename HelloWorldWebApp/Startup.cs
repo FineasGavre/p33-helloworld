@@ -3,6 +3,8 @@
 // </copyright>
 
 using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Services;
+using HelloWorldWebApp.Services.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +44,7 @@ namespace HelloWorldWebApp
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<ITeamMemberService, TeamMemberService>();
+            services.AddScoped<IWeatherService, WeatherService>();
         }
 
         /// <summary>
