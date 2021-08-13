@@ -27,8 +27,8 @@ namespace HelloWorldWebApp.Services.Impl
 
         public async Task<IEnumerable<DailyWeather>> GetWeatherAsync()
         {
-            var latitude = "46.7700";
-            var longitude = "23.5800";
+            var latitude = configuration["Latitude"];
+            var longitude = configuration["Longitude"];
             var response = await httpClient.GetStringAsync($"http://api.openweathermap.org/data/2.5/onecall?lat={latitude}&lon={longitude}&exclude=current,minutely,hourly,alerts&appid={API_KEY}");
 
             return ParseWeatherForecastResponse(response);
