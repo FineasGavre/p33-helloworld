@@ -38,34 +38,33 @@ namespace HelloWorldWebApp.Services.Impl
         {
             var weatherJsonResponse = JObject.Parse(jsonResponse);
             var dailyForecastArray = weatherJsonResponse.SelectToken("daily");
-
-            var dailyWeather = dailyForecastArray.Select(forecast =>
-            {
-                var dateTimeUnixFormat = forecast.Value<long>("dt");
-                var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(dateTimeUnixFormat);
-
-                var temperatureObject = forecast.SelectToken("temp");
-                var temperatureKelvin = temperatureObject.Value<double>("day");
-                var temperature = ConvertKelvinToCelsius(temperatureKelvin);
-
-                var weatherTypes = forecast.SelectToken("weather")
-                    .Select(type => WeatherTypeConverter.GetWeatherTypeFromWeatherCode(type.Value<int>("id")))
-                    .ToList();
-
-                return new DailyWeather
-                {
-                    Date = dateTimeOffset,
-                    Temperature = temperature,
-                    WeatherTypes = weatherTypes,
-                };
-            });
-
-            return dailyWeather;
+            return dailyForecastArray.Select(forecast => CreateDailyWeatherFromJToken(forecast));
         }
 
         public double ConvertKelvinToCelsius(double kelvinTemperature)
         {
             return kelvinTemperature - 273.15;
+        }
+
+        private DailyWeather CreateDailyWeatherFromJToken(JToken token)
+        {
+            var dateTimeUnixFormat = token.Value<long>("dt");
+            var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(dateTimeUnixFormat);
+
+            var temperatureObject = token.SelectToken("temp");
+            var temperatureKelvin = temperatureObject.Value<double>("day");
+            var temperature = ConvertKelvinToCelsius(temperatureKelvin);
+
+            var weatherTypes = token.SelectToken("weather")
+                .Select(type => WeatherTypeConverter.GetWeatherTypeFromWeatherCode(type.Value<int>("id")))
+                .ToList();
+
+            return new DailyWeather
+            {
+                Date = dateTimeOffset,
+                Temperature = temperature,
+                WeatherTypes = weatherTypes,
+            };
         }
     }
 }
