@@ -18,11 +18,13 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
 		<PackageReference Include="Moq" Version="4.16.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
 		<PackageReference Include="Pose" Version="1.2.1" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
 		<AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
 	</ItemGroup>
 
