@@ -24,7 +24,7 @@ namespace HelloWorldWebApp
         /// <param name="args">Runtime args.</param>
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().MigrateDatabase().Run();
         }
 
         /// <summary>
