@@ -1,32 +1,50 @@
-﻿using System;
+﻿// <copyright file="SkillsController.cs" company="PRINCIPAL33">
+// Copyright (c) PRINCIPAL33. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HelloWorldWebApp.Data;
-using HelloWorldWebApp.Data.Models;
 
 namespace HelloWorldWebApp.Controllers
 {
+    /// <summary>
+    /// Controller for the Skill entity.
+    /// </summary>
     public class SkillsController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly ApplicationContext context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SkillsController"/> class.
+        /// </summary>
+        /// <param name="context">DI ApplicationContext.</param>
         public SkillsController(ApplicationContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
-        // GET: Skills
+        /// <summary>
+        /// Display the Index view.
+        /// </summary>
+        /// <returns>Index View with Index model.</returns>
         public async Task<IActionResult> Index()
         {
-            var applicationContext = _context.Skills.Include(s => s.Intern);
+            var applicationContext = context.Skills.Include(s => s.Intern);
             return View(await applicationContext.ToListAsync());
         }
 
-        // GET: Skills/Details/5
+        /// <summary>
+        /// Display the Detail view.
+        /// </summary>
+        /// <param name="id">Id of entity to be edited.</param>
+        /// <returns>Detail View with Detail model.</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,7 +52,7 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var skill = await _context.Skills
+            var skill = await context.Skills
                 .Include(s => s.Intern)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (skill == null)
@@ -45,31 +63,41 @@ namespace HelloWorldWebApp.Controllers
             return View(skill);
         }
 
-        // GET: Skills/Create
+        /// <summary>
+        /// Display the Create view.
+        /// </summary>
+        /// <returns>Create View.</returns>
         public IActionResult Create()
         {
-            ViewData["InternId"] = new SelectList(_context.Interns, "Id", "Id");
+            ViewData["InternId"] = new SelectList(context.Interns, "Id", "Id");
             return View();
         }
 
-        // POST: Skills/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Create the Skill entity.
+        /// </summary>
+        /// <param name="skill">Skill object.</param>
+        /// <returns>Adds the entity and returns the Create View.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,SkillMatrixUrl,InternId")] Skill skill)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(skill);
-                await _context.SaveChangesAsync();
+                context.Add(skill);
+                await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InternId"] = new SelectList(_context.Interns, "Id", "Id", skill.InternId);
+
+            ViewData["InternId"] = new SelectList(context.Interns, "Id", "Id", skill.InternId);
             return View(skill);
         }
 
-        // GET: Skills/Edit/5
+        /// <summary>
+        /// Displays the Edit form.
+        /// </summary>
+        /// <param name="id">Id of entity to be edited.</param>
+        /// <returns>Edit View.</returns>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,18 +105,22 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var skill = await _context.Skills.FindAsync(id);
+            var skill = await context.Skills.FindAsync(id);
             if (skill == null)
             {
                 return NotFound();
             }
-            ViewData["InternId"] = new SelectList(_context.Interns, "Id", "Id", skill.InternId);
+
+            ViewData["InternId"] = new SelectList(context.Interns, "Id", "Id", skill.InternId);
             return View(skill);
         }
 
-        // POST: Skills/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Updates the Skill entity.
+        /// </summary>
+        /// <param name="id">Id of entity to be updated.</param>
+        /// <param name="skill">Intern object with new values.</param>
+        /// <returns>View.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,SkillMatrixUrl,InternId")] Skill skill)
@@ -102,8 +134,8 @@ namespace HelloWorldWebApp.Controllers
             {
                 try
                 {
-                    _context.Update(skill);
-                    await _context.SaveChangesAsync();
+                    context.Update(skill);
+                    await context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,13 +148,19 @@ namespace HelloWorldWebApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InternId"] = new SelectList(_context.Interns, "Id", "Id", skill.InternId);
+
+            ViewData["InternId"] = new SelectList(context.Interns, "Id", "Id", skill.InternId);
             return View(skill);
         }
 
-        // GET: Skills/Delete/5
+        /// <summary>
+        /// Displays the delete form.
+        /// </summary>
+        /// <param name="id">Id of entity to be deleted.</param>
+        /// <returns>Delete View.</returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,7 +168,7 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var skill = await _context.Skills
+            var skill = await context.Skills
                 .Include(s => s.Intern)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (skill == null)
@@ -141,20 +179,25 @@ namespace HelloWorldWebApp.Controllers
             return View(skill);
         }
 
-        // POST: Skills/Delete/5
-        [HttpPost, ActionName("Delete")]
+        /// <summary>
+        /// Deletes the specified entity.
+        /// </summary>
+        /// <param name="id">Id of entity to be deleted.</param>
+        /// <returns>Delete view.</returns>
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var skill = await _context.Skills.FindAsync(id);
-            _context.Skills.Remove(skill);
-            await _context.SaveChangesAsync();
+            var skill = await context.Skills.FindAsync(id);
+            context.Skills.Remove(skill);
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool SkillExists(int id)
         {
-            return _context.Skills.Any(e => e.Id == id);
+            return context.Skills.Any(e => e.Id == id);
         }
     }
 }

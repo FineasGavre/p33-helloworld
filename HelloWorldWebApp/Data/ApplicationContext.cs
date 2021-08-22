@@ -3,9 +3,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HelloWorldWebApp.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,8 +27,19 @@ namespace HelloWorldWebApp.Data
         /// </summary>
         public DbSet<TeamMember> TeamMembers { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Interns DbSet.
+        /// </summary>
         public DbSet<Intern> Interns { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Skills DbSet.
+        /// </summary>
         public DbSet<Skill> Skills { get; set; }
+
+        /// <summary>
+        /// Gets or sets the LibraryResources DbSet.
+        /// </summary>
         public DbSet<LibraryResource> LibraryResources { get; set; }
 
         /// <summary>
@@ -64,8 +72,7 @@ namespace HelloWorldWebApp.Data
                     Name = "Andrei Popescu",
                     Birthdate = new DateTime(2001, 1, 1),
                     Email = "andreipopescu@gmail.com",
-                }
-            );
+                });
 
             modelBuilder.Entity<Skill>().HasData(
                 new Skill
@@ -83,8 +90,7 @@ namespace HelloWorldWebApp.Data
                     Description = "Nice skill 2",
                     SkillMatrixUrl = "https://url2.here",
                     InternId = 2,
-                }
-            );
+                });
 
             modelBuilder.Entity<LibraryResource>().HasData(
                 new LibraryResource
@@ -102,8 +108,7 @@ namespace HelloWorldWebApp.Data
                     Recommendation = "Bad",
                     URL = "https://libresources2.com",
                     SkillId = 2,
-                }
-            );
+                });
         }
     }
 }

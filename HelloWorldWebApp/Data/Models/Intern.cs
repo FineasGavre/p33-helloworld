@@ -1,20 +1,48 @@
-﻿using System;
+﻿// <copyright file="Intern.cs" company="PRINCIPAL33">
+// Copyright (c) PRINCIPAL33. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HelloWorldWebApp.Data.Models
 {
+    /// <summary>
+    /// Intern model.
+    /// </summary>
     public class Intern
     {
+        /// <summary>
+        /// Gets or sets the Id.
+        /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Name.
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Birthdate.
+        /// </summary>
         public DateTime Birthdate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Email.
+        /// </summary>
         public string Email { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Skills collection.
+        /// </summary>
         public ICollection<Skill> Skills { get; set; }
 
-        public int GetAge() { 
+        /// <summary>
+        /// Compute the Age of the Intern.
+        /// </summary>
+        /// <returns>Intern age.</returns>
+        public int GetAge()
+        {
             var now = DateTime.Now;
             var age = now.Year - Birthdate.Year;
 

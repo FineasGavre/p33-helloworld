@@ -1,31 +1,49 @@
-﻿using System;
+﻿// <copyright file="InternsController.cs" company="PRINCIPAL33">
+// Copyright (c) PRINCIPAL33. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HelloWorldWebApp.Data;
-using HelloWorldWebApp.Data.Models;
 
 namespace HelloWorldWebApp.Controllers
 {
+    /// <summary>
+    /// Controller for the Intern entity.
+    /// </summary>
     public class InternsController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly ApplicationContext context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternsController"/> class.
+        /// </summary>
+        /// <param name="context">DI injected ApplicationContext.</param>
         public InternsController(ApplicationContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
-        // GET: Interns
+        /// <summary>
+        /// Display the Index view.
+        /// </summary>
+        /// <returns>Index View with Index model.</returns>
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Interns.ToListAsync());
+            return View(await context.Interns.ToListAsync());
         }
 
-        // GET: Interns/Details/5
+        /// <summary>
+        /// Display the Detail view.
+        /// </summary>
+        /// <param name="id">Id of entity to be edited.</param>
+        /// <returns>Detail View with Detail model.</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,7 +51,7 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var intern = await _context.Interns
+            var intern = await context.Interns
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (intern == null)
             {
@@ -43,29 +61,39 @@ namespace HelloWorldWebApp.Controllers
             return View(intern);
         }
 
-        // GET: Interns/Create
+        /// <summary>
+        /// Display the Create view.
+        /// </summary>
+        /// <returns>Create View.</returns>
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Interns/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Create the Intern entity.
+        /// </summary>
+        /// <param name="intern">Intern object.</param>
+        /// <returns>Adds the entity and returns the Create View.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Birthdate,Email")] Intern intern)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(intern);
-                await _context.SaveChangesAsync();
+                context.Add(intern);
+                await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(intern);
         }
 
-        // GET: Interns/Edit/5
+        /// <summary>
+        /// Displays the Edit form.
+        /// </summary>
+        /// <param name="id">Id of entity to be edited.</param>
+        /// <returns>Edit View.</returns>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,17 +101,21 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var intern = await _context.Interns.FindAsync(id);
+            var intern = await context.Interns.FindAsync(id);
             if (intern == null)
             {
                 return NotFound();
             }
+
             return View(intern);
         }
 
-        // POST: Interns/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Updates the intern entity.
+        /// </summary>
+        /// <param name="id">Id of entity to be updated.</param>
+        /// <param name="intern">Intern object with new values.</param>
+        /// <returns>View.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Birthdate,Email")] Intern intern)
@@ -97,8 +129,8 @@ namespace HelloWorldWebApp.Controllers
             {
                 try
                 {
-                    _context.Update(intern);
-                    await _context.SaveChangesAsync();
+                    context.Update(intern);
+                    await context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -111,12 +143,18 @@ namespace HelloWorldWebApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(intern);
         }
 
-        // GET: Interns/Delete/5
+        /// <summary>
+        /// Displays the delete form.
+        /// </summary>
+        /// <param name="id">Id of entity to be deleted.</param>
+        /// <returns>Delete View.</returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,7 +162,7 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var intern = await _context.Interns
+            var intern = await context.Interns
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (intern == null)
             {
@@ -134,20 +172,25 @@ namespace HelloWorldWebApp.Controllers
             return View(intern);
         }
 
-        // POST: Interns/Delete/5
-        [HttpPost, ActionName("Delete")]
+        /// <summary>
+        /// Deletes the specified entity.
+        /// </summary>
+        /// <param name="id">Id of entity to be deleted.</param>
+        /// <returns>Delete view.</returns>
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var intern = await _context.Interns.FindAsync(id);
-            _context.Interns.Remove(intern);
-            await _context.SaveChangesAsync();
+            var intern = await context.Interns.FindAsync(id);
+            context.Interns.Remove(intern);
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool InternExists(int id)
         {
-            return _context.Interns.Any(e => e.Id == id);
+            return context.Interns.Any(e => e.Id == id);
         }
     }
 }

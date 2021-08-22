@@ -1,32 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// <copyright file="LibraryResourcesController.cs" company="PRINCIPAL33">
+// Copyright (c) PRINCIPAL33. All rights reserved.
+// </copyright>
+
 using System.Linq;
 using System.Threading.Tasks;
+using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HelloWorldWebApp.Data;
-using HelloWorldWebApp.Data.Models;
 
 namespace HelloWorldWebApp.Controllers
 {
+    /// <summary>
+    /// Controller for the LibraryResources entity.
+    /// </summary>
     public class LibraryResourcesController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly ApplicationContext context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LibraryResourcesController"/> class.
+        /// </summary>
+        /// <param name="context">DI ApplicationContext.</param>
         public LibraryResourcesController(ApplicationContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
-        // GET: LibraryResources
+        /// <summary>
+        /// Display the Index view.
+        /// </summary>
+        /// <returns>Index View with Index model.</returns>
         public async Task<IActionResult> Index()
         {
-            var applicationContext = _context.LibraryResources.Include(l => l.Skill);
+            var applicationContext = context.LibraryResources.Include(l => l.Skill);
             return View(await applicationContext.ToListAsync());
         }
 
-        // GET: LibraryResources/Details/5
+        /// <summary>
+        /// Display the Detail view.
+        /// </summary>
+        /// <param name="id">Id of entity to be edited.</param>
+        /// <returns>Detail View with Detail model.</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,7 +50,7 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var libraryResource = await _context.LibraryResources
+            var libraryResource = await context.LibraryResources
                 .Include(l => l.Skill)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (libraryResource == null)
@@ -45,31 +61,41 @@ namespace HelloWorldWebApp.Controllers
             return View(libraryResource);
         }
 
-        // GET: LibraryResources/Create
+        /// <summary>
+        /// Display the Create view.
+        /// </summary>
+        /// <returns>Create View.</returns>
         public IActionResult Create()
         {
-            ViewData["SkillId"] = new SelectList(_context.Skills, "Id", "Id");
+            ViewData["SkillId"] = new SelectList(context.Skills, "Id", "Id");
             return View();
         }
 
-        // POST: LibraryResources/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Create the LibraryResource entity.
+        /// </summary>
+        /// <param name="libraryResource">LibraryResource object.</param>
+        /// <returns>Adds the entity and returns the Create View.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Recommendation,URL,SkillId")] LibraryResource libraryResource)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(libraryResource);
-                await _context.SaveChangesAsync();
+                context.Add(libraryResource);
+                await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SkillId"] = new SelectList(_context.Skills, "Id", "Id", libraryResource.SkillId);
+
+            ViewData["SkillId"] = new SelectList(context.Skills, "Id", "Id", libraryResource.SkillId);
             return View(libraryResource);
         }
 
-        // GET: LibraryResources/Edit/5
+        /// <summary>
+        /// Displays the Edit form.
+        /// </summary>
+        /// <param name="id">Id of entity to be edited.</param>
+        /// <returns>Edit View.</returns>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,18 +103,22 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var libraryResource = await _context.LibraryResources.FindAsync(id);
+            var libraryResource = await context.LibraryResources.FindAsync(id);
             if (libraryResource == null)
             {
                 return NotFound();
             }
-            ViewData["SkillId"] = new SelectList(_context.Skills, "Id", "Id", libraryResource.SkillId);
+
+            ViewData["SkillId"] = new SelectList(context.Skills, "Id", "Id", libraryResource.SkillId);
             return View(libraryResource);
         }
 
-        // POST: LibraryResources/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Updates the LibraryResource entity.
+        /// </summary>
+        /// <param name="id">Id of entity to be updated.</param>
+        /// <param name="libraryResource">LibraryResource object with new values.</param>
+        /// <returns>View.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Recommendation,URL,SkillId")] LibraryResource libraryResource)
@@ -102,8 +132,8 @@ namespace HelloWorldWebApp.Controllers
             {
                 try
                 {
-                    _context.Update(libraryResource);
-                    await _context.SaveChangesAsync();
+                    context.Update(libraryResource);
+                    await context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,13 +146,19 @@ namespace HelloWorldWebApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SkillId"] = new SelectList(_context.Skills, "Id", "Id", libraryResource.SkillId);
+
+            ViewData["SkillId"] = new SelectList(context.Skills, "Id", "Id", libraryResource.SkillId);
             return View(libraryResource);
         }
 
-        // GET: LibraryResources/Delete/5
+        /// <summary>
+        /// Displays the delete form.
+        /// </summary>
+        /// <param name="id">Id of entity to be deleted.</param>
+        /// <returns>Delete View.</returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,7 +166,7 @@ namespace HelloWorldWebApp.Controllers
                 return NotFound();
             }
 
-            var libraryResource = await _context.LibraryResources
+            var libraryResource = await context.LibraryResources
                 .Include(l => l.Skill)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (libraryResource == null)
@@ -141,20 +177,25 @@ namespace HelloWorldWebApp.Controllers
             return View(libraryResource);
         }
 
-        // POST: LibraryResources/Delete/5
-        [HttpPost, ActionName("Delete")]
+        /// <summary>
+        /// Deletes the specified entity.
+        /// </summary>
+        /// <param name="id">Id of entity to be deleted.</param>
+        /// <returns>Delete view.</returns>
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var libraryResource = await _context.LibraryResources.FindAsync(id);
-            _context.LibraryResources.Remove(libraryResource);
-            await _context.SaveChangesAsync();
+            var libraryResource = await context.LibraryResources.FindAsync(id);
+            context.LibraryResources.Remove(libraryResource);
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool LibraryResourceExists(int id)
         {
-            return _context.LibraryResources.Any(e => e.Id == id);
+            return context.LibraryResources.Any(e => e.Id == id);
         }
     }
 }
