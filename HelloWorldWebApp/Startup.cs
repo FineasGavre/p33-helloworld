@@ -44,7 +44,36 @@ namespace HelloWorldWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("LocalPostgresContext")));
+            services.AddDbContext<ApplicationContext>(options =>
+            {
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                string connectionString;
+
+                if (env == "Development")
+                {
+                    connectionString = Configuration.GetConnectionString("LocalPostgresContext");
+                }
+                else
+                {
+                    var connectionUri = Environment.GetEnvironmentVariable("DATABASE_URL");
+                    connectionUri = connectionUri.Replace("postgres://", string.Empty);
+
+                    var pgUserPass = connectionUri.Split("@")[0];
+                    var pgHostPortDb = connectionUri.Split("@")[1];
+                    var pgHostPort = pgHostPortDb.Split("/")[0];
+                    var pgDb = pgHostPortDb.Split("/")[1];
+                    var pgUser = pgUserPass.Split(":")[0];
+                    var pgPass = pgUserPass.Split(":")[1];
+                    var pgHost = pgHostPort.Split(":")[0];
+                    var pgPort = pgHostPort.Split(":")[1];
+
+                    connectionString = $"Host={pgHost};Port={pgPort};Username={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=true";
+                }
+
+                options.UseNpgsql(connectionString);
+            });
+
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<ITeamMemberService, TeamMemberService>();
