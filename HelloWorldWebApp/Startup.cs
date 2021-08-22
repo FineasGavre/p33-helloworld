@@ -44,7 +44,7 @@ namespace HelloWorldWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
+            services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("LocalPostgresContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<ITeamMemberService, TeamMemberService>();
