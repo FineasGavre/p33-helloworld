@@ -1,5 +1,23 @@
+const connection = new signalR.HubConnectionBuilder().withUrl("/hubs/teammember").build();
+
 $(document).ready(() => {
-    fetchAndReplaceTeamMembers()
+    connection.on('AddedTeamMember', function (teamMember) {
+        pushTeamMemberInTeamMemberList(teamMember)
+    })
+
+    connection.on('DeletedTeamMember', function (teamMemberId) {
+        removeTeamMemberFromList(teamMemberId)
+    })
+
+    connection.on('UpdatedTeamMember', function (teamMember) {
+        updateTeamMemberFromList(teamMember)
+    })
+
+    connection.start().then(function () {
+        fetchAndReplaceTeamMembers()
+    }).catch(function (err) {
+        console.log(err)
+    })
 
     $('#addTeamMemberButton').click(onAddTeamMemberButton)
 
@@ -32,10 +50,7 @@ function onEditModalSubmit() {
         return
     }
 
-    putTeamMember(id, newName)
-        .then(() => {
-            $(`[data-member-id=${id}] [data-name]`).text(newName)
-        })
+    putTeamMemberToServer(parseInt(id), newName)
         .catch(err => {
             console.log(err)
         })
@@ -53,10 +68,7 @@ function onEditButton() {
 }
 
 function onDeleteButton() {
-    deleteTeamMember($(this).parent().attr('data-member-id'))
-        .then(() => {
-            $(this).parent().remove()
-        })
+    deleteTeamMemberFromServer(parseInt($(this).parent().attr('data-member-id')))
         .catch(err => {
             console.log(err)
         })
@@ -73,6 +85,16 @@ const onAddTeamMemberButton = () => {
     teamMemberInput.val('').change()
 
     postTeamMemberToServer(teamMember)
+        .catch(err => {
+            console.log(err)
+        })
+}
+
+const removeTeamMemberFromList = (teamMemberId) => $(`li[data-member-id=${teamMemberId}]`).remove()
+
+const updateTeamMemberFromList = (teamMember) => {
+    const memberItem = $(`li[data-member-id=${teamMember.id}]`)
+    memberItem.children('[data-name]').text(teamMember.name)
 }
 
 const replaceContentsOfListWithTeamMembers = (teamMembers) => {
@@ -94,45 +116,33 @@ const replaceContentsOfListWithTeamMembers = (teamMembers) => {
     $('button[data-edit]').click(onEditButton)
 }
 
-const fetchAndReplaceTeamMembers = () => {
-    fetchTeamMembers()
-        .then(data => {
-            replaceContentsOfListWithTeamMembers(data)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+const pushTeamMemberInTeamMemberList = (teamMember) => {
+    const teamMemberList = $('#teamMemberList')
+
+    teamMemberList.append(`
+        <li data-member-id="${teamMember.id}">
+            <span data-name>${teamMember.name}</span>
+            <button data-edit><i class="fa fa-pencil"></i></button>
+            <button data-delete><i class="fa fa-trash"></i></button>
+        </li>
+    `)
+
+    $(`[data-member-id=${teamMember.id}] button[data-delete]`).click(onDeleteButton)
+    $(`[data-member-id=${teamMember.id}] button[data-edit]`).click(onEditButton)
 }
 
-const postTeamMemberToServer = (teamMember) => {
-    addTeamMember(teamMember)
-        .then(() => {
-            console.log('Added successfully.')
-            fetchAndReplaceTeamMembers()
+const fetchAndReplaceTeamMembers = () => {
+    connection.invoke("GetTeamMembers")
+        .then((result) => {
+            replaceContentsOfListWithTeamMembers(result)
         })
         .catch((err) => {
             console.log(err)
-            fetchAndReplaceTeamMembers()
         })
 }
 
-const fetchTeamMembers = () => $.get('/Home/GetTeamMembers')
+const postTeamMemberToServer = (teamMember) =>  connection.invoke("AddTeamMember", teamMember)
 
-const addTeamMember = (teamMember) => $.post('/Home/AddTeamMember', { TeamMemberName: teamMember })
+const deleteTeamMemberFromServer = (teamMemberId) => connection.invoke("DeleteTeamMember", teamMemberId)
 
-const deleteTeamMember = (teamMemberId) => $.ajax({
-    method: 'DELETE',
-    url: '/Home/DeleteTeamMember',
-    data: {
-        id: teamMemberId
-    }
-})
-
-const putTeamMember = (teamMemberId, newName) => $.ajax({
-    method: 'PUT',
-    url: '/Home/UpdateTeamMember',
-    data: {
-        id: teamMemberId,
-        name: newName
-    }
-})
+const putTeamMemberToServer = (teamMemberId, newName) => connection.invoke("UpdateTeamMember", { id: teamMemberId, name: newName })

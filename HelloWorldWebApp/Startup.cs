@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Hubs;
 using HelloWorldWebApp.Services;
 using HelloWorldWebApp.Services.Impl;
 using Microsoft.AspNetCore.Builder;
@@ -73,7 +74,6 @@ namespace HelloWorldWebApp
                 options.UseNpgsql(connectionString);
             });
 
-
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<ITeamMemberService, TeamMemberService>();
@@ -88,6 +88,8 @@ namespace HelloWorldWebApp
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddSignalR();
         }
 
         /// <summary>
@@ -123,6 +125,7 @@ namespace HelloWorldWebApp
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<TeamMemberHub>("/hubs/teammember");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

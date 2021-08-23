@@ -1,4 +1,8 @@
-﻿using System;
+﻿// <copyright file="Extensions.cs" company="PRINCIPAL33">
+// Copyright (c) PRINCIPAL33. All rights reserved.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
