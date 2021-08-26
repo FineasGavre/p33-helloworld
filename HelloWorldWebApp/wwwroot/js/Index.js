@@ -102,12 +102,16 @@ const replaceContentsOfListWithTeamMembers = (teamMembers) => {
 
     teamMemberList.html('')
 
+    const actions = loggedIn ? `
+        <button data-edit><i class="fa fa-pencil"></i></button>
+        <button data-delete><i class="fa fa-trash"></i></button>
+    ` : ''
+
     teamMembers.forEach(teamMember => {
         teamMemberList.append(`
             <li data-member-id="${teamMember.id}">
                 <span data-name>${teamMember.name}</span>
-                <button data-edit><i class="fa fa-pencil"></i></button>
-                <button data-delete><i class="fa fa-trash"></i></button>
+                ${actions}
             </li>
         `)
     })
@@ -119,11 +123,15 @@ const replaceContentsOfListWithTeamMembers = (teamMembers) => {
 const pushTeamMemberInTeamMemberList = (teamMember) => {
     const teamMemberList = $('#teamMemberList')
 
+    const actions = loggedIn ? `
+        <button data-edit><i class="fa fa-pencil"></i></button>
+        <button data-delete><i class="fa fa-trash"></i></button>
+    ` : ''
+
     teamMemberList.append(`
         <li data-member-id="${teamMember.id}">
             <span data-name>${teamMember.name}</span>
-            <button data-edit><i class="fa fa-pencil"></i></button>
-            <button data-delete><i class="fa fa-trash"></i></button>
+            ${actions}
         </li>
     `)
 
