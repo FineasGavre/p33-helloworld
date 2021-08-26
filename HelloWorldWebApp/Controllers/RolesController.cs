@@ -23,7 +23,7 @@ namespace HelloWorldWebApp.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="RolesController"/> class.
         /// </summary>
-        /// <param name="roleManager">DI RoleManager</param>
+        /// <param name="roleManager">DI RoleManager.</param>
         public RolesController(RoleManager<IdentityRole> roleManager)
         {
             this.roleManager = roleManager;
@@ -59,7 +59,8 @@ namespace HelloWorldWebApp.Controllers
             {
                 await roleManager.CreateAsync(role);
                 return RedirectToAction(nameof(Index));
-            } catch
+            }
+            catch
             {
                 return View();
             }
