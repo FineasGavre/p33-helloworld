@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Controller for the Intern entity.
     /// </summary>
+    [Authorize]
     public class InternsController : Controller
     {
         private readonly ApplicationContext context;

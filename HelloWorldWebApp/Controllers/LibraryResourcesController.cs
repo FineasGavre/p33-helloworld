@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Controller for the LibraryResources entity.
     /// </summary>
+    [Authorize]
     public class LibraryResourcesController : Controller
     {
         private readonly ApplicationContext context;

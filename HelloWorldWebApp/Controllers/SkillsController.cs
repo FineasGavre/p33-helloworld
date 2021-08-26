@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Controller for the Skill entity.
     /// </summary>
+    [Authorize]
     public class SkillsController : Controller
     {
         private readonly ApplicationContext context;

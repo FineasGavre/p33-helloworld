@@ -7,6 +7,7 @@ using System.Linq;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Data.Models;
 using HelloWorldWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -15,6 +16,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Main app controller.
     /// </summary>
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
@@ -35,6 +37,7 @@ namespace HelloWorldWebApp.Controllers
         /// Index action.
         /// </summary>
         /// <returns>Index.cshtml view with model.</returns>
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
