@@ -16,7 +16,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Main app controller.
     /// </summary>
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
