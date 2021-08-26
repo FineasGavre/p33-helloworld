@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace HelloWorldWebApp.Hubs
@@ -41,6 +42,7 @@ namespace HelloWorldWebApp.Hubs
         /// </summary>
         /// <param name="teamMemberName">The name of the new TeamMember.</param>
         /// <returns>Completed task.</returns>
+        [Authorize(Roles = "Administrator")]
         public async Task AddTeamMember(string teamMemberName)
         {
             var teamMember = new TeamMember { Name = teamMemberName };
@@ -53,6 +55,7 @@ namespace HelloWorldWebApp.Hubs
         /// </summary>
         /// <param name="teamMemberId">The id of the TeamMember to be deleted.</param>
         /// <returns>Completed task.</returns>
+        [Authorize(Roles = "Administrator")]
         public async Task DeleteTeamMember(int teamMemberId)
         {
             teamMemberService.DeleteTeamMember(teamMemberId);
@@ -64,6 +67,7 @@ namespace HelloWorldWebApp.Hubs
         /// </summary>
         /// <param name="teamMember">The updated TeamMember.</param>
         /// <returns>Completed task.</returns>
+        [Authorize(Roles = "Administrator")]
         public async Task UpdateTeamMember(TeamMember teamMember)
         {
             teamMemberService.UpdateTeamMember(teamMember);
