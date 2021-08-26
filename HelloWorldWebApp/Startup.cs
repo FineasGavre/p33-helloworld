@@ -11,6 +11,7 @@ using HelloWorldWebApp.Services;
 using HelloWorldWebApp.Services.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +75,10 @@ namespace HelloWorldWebApp
                 options.UseNpgsql(connectionString);
             });
 
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationContext>();
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<ITeamMemberService, TeamMemberService>();
@@ -121,11 +126,13 @@ namespace HelloWorldWebApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<TeamMemberHub>("/hubs/teammember");
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

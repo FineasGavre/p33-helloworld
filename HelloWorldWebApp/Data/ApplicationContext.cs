@@ -4,6 +4,7 @@
 
 using System;
 using HelloWorldWebApp.Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelloWorldWebApp.Data
@@ -11,7 +12,7 @@ namespace HelloWorldWebApp.Data
     /// <summary>
     /// DbContext for the current Application.
     /// </summary>
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContext"/> class.
@@ -48,6 +49,8 @@ namespace HelloWorldWebApp.Data
         /// <param name="modelBuilder">ModelBuilder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<TeamMember>().ToTable("TeamMembers");
             modelBuilder.Entity<Intern>().ToTable("Interns");
             modelBuilder.Entity<Skill>().ToTable("Skills");
