@@ -4,7 +4,11 @@
     ViewData["Title"] = "Roles";
 }
 <h1>@ViewData["Title"]</h1>
-<a asp-action="Create">Create Role</a>
+
+@if(User.IsInRole("Administrator")) {
+    <a asp-action="Create">Create Role</a>
+}
+
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
