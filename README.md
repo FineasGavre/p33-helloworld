@@ -6,6 +6,16 @@
 This is a hello world project.
 Wrote using VIM, ew.
 
+## Versioning
+### On Manual Deploys
+1. You can set the version of the app using the `VERSION` build argument in `docker build`.
+```bash
+docker run -e DATABASE_URL={database_url} -dp {external_port}:80 p33-helloworld --build-args=VERSION=1.0.0.1
+```
+
+### Github Actions CI/CD Flow
+1. You can modify the version in the [`dotnet.yml`](https://github.com/FineasGavre/p33-helloworld/blob/master/.github/workflows/dotnet.yml) file.
+
 ## How to run / deploy
 ### Locally (via Docker)
 
