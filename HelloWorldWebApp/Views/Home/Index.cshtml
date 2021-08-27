@@ -5,14 +5,14 @@
     ViewData["Title"] = "Home Page";
 
     var loggedIn = SignInManager.IsSignedIn(User);
-    var isAdmin = User.IsInRole("Administrator");
+    var isOperator = User.IsInRole("Operator");
 }
 
 <div class="text-center">
-    @if (loggedIn && !isAdmin)
+    @if (loggedIn && !isOperator)
     {
         <div class="alert alert-warning" role="alert">
-          <b>Hey listen!</b> In order to edit the Team Member list, you need to have administrator privileges.
+          <b>Hey listen!</b> In order to edit the Team Member list, you need to have operator privileges.
         </div>
     }
 
@@ -21,7 +21,7 @@
     <ul id="teamMemberList">
        
     </ul>
-    @if (loggedIn && isAdmin)
+    @if (loggedIn && isOperator)
     {
         <input id="teamMemberInput" type="text" />
         <button type="submit" id="addTeamMemberButton">Add to list</button>
@@ -54,7 +54,7 @@
 
 @section Scripts {
     <script>
-        const loggedIn = @((loggedIn && isAdmin).ToString().ToLower()) 
+        const loggedIn = @((loggedIn && isOperator).ToString().ToLower()) 
 	</script>
     <script type="text/javascript" src="~/js/Index.js"></script>
 }
