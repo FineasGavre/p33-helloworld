@@ -1,6 +1,7 @@
 # Hello World
 [![.NET](https://github.com/FineasGavre/p33-helloworld/actions/workflows/dotnet.yml/badge.svg)](https://github.com/FineasGavre/p33-helloworld/actions/workflows/dotnet.yml)
 
+[View on Heroku](https://helloworldp33.herokuapp.com/)
 
 This is a hello world project.
 Wrote using VIM, ew.
