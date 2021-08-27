@@ -8,9 +8,16 @@ This is a hello world project.
 ## Development
 ### Database Access
 When the environment variable `ASPNETCORE_ENVIRONMENT` has the value `DEVELOPMENT`, the application will use the ConnectionString `LocalPostgresContext` found in `appsettings.json`. Switching the value to `PRODUCTION` will make the application use a database supplied via the `DATABASE_URL` environment variable.
-### Initial User Creation
-When the environment variable `ShouldCreateDefaultUsers` is set, the application will ensure the creation of 2 roles (Operator and Administrator) and create two users that are included in each role. **You should run the application at least once with this variable before starting development.**
+### Initial Administrator Creation
+When the environment variable `DefaultAdminUserCredentials` is set, the application will create an administrator account with the credentials taken from the environment variable value with format (`<email>;<password>`).
 
+For example, setting the environment variable to:
+```bash
+DefaultAdminUserCredentials=admin@acme.com;Password1234!
+```
+will create an account that has the email `admin@acme.com` and password `Password1234!`. This account will be added automatically to the `Administrator` role.
+
+The account will **not be created** if a user with that email already exists, but it **will be assigned** to the `Administrator` role.
 
 ## Versioning
 ### On Manual Deploys
