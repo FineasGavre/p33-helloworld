@@ -97,7 +97,10 @@ namespace HelloWorldWebApp
 
             services.AddSignalR();
 
-            EnsureUsersCreated(services).Wait();
+            if (Environment.GetEnvironmentVariable("ShouldCreateDefaultUsers") != null)
+            {
+                EnsureUsersCreated(services).Wait();
+            }
         }
 
         /// <summary>
@@ -149,8 +152,8 @@ namespace HelloWorldWebApp
             var serviceProvider = services.BuildServiceProvider();
             var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
 
-            var adminUser = await EnsureUserCreated(userManager, "borys.lebeda@principal33.com", "TzfOh22_FCbjxXQt6U");
-            var operatorUser = await EnsureUserCreated(userManager, "borys.lebeda2@principal33.com", "TzfOh22_FCbjxXQt6U2");
+            var adminUser = await EnsureUserCreated(userManager, "fineasgavre@gmail.com", "TzfOh22_FCbjxXQt6U");
+            var operatorUser = await EnsureUserCreated(userManager, "fineasgavre.admin@gmail.com", "TzfOh22_FCbjxXQt6U2");
 
             var adminRole = await EnsureRoleCreated(serviceProvider, "Administrator");
             var operatorRole = await EnsureRoleCreated(serviceProvider, "Operator");
