@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -21,16 +21,22 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Add SHORT_SHA env property with commit short sha
-      run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-    - name: Build, Push and Release a Docker container to Heroku.
-      uses: akhileshns/heroku-deploy@v3.12.12
-      with:
-        heroku_email: ${{ secrets.HEROKU_EMAIL }}
-        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-        heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-        usedocker: true
-        docker_build_args: |
-          VERSION
-      env:
-        VERSION: 1.0.0-${SHORT_SHA}
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+      - name: Build, Push and Release a Docker container to Heroku.
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          usedocker: true
+          docker_build_args: |
+            VERSION
+        env:
+          VERSION: 1.0.0-${SHORT_SHA}
+
+
