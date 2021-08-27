@@ -6,44 +6,40 @@ $(document).ready(() => {
     connection.start().then(() => {
         loadRoles()
         addClickHandlers()
-    }).catch(err => {
-        console.log(err)
-    })
+    }).catch(logAndDisplayError)
 
-    connection.on('DisplayError', errorMessage => {
-        $('#errorToast .toast-body').text(errorMessage)
-        $('#errorToast').toast('show')
-    })
-
-    connection.on('DisplayWarning', warningMessage => {
-        $('#warningToast .toast-body').text(errorMessage)
-        $('#warningToasts').toast('show')
-    })
+    connection.on('DisplayError', displayErrorToast)
+    connection.on('DisplayWarning', displayWarningToast)
 
     connection.on('UserRoleAdded', () => loadRoles())
     connection.on('UserRoleRemoved', () => loadRoles())
 })
 
 const addClickHandlers = () => {
-    const assignedRolesElem = $('#assignedRolesList')
-    const unassignedRolesElem = $('#unassignedRolesList')
-
-    assignedRolesElem.on('click', '[data-role-action="unassign"]', function () {
+    $('#assignedRolesList').on('click', '[data-role-action="unassign"]', function () {
         $(this).prop('disabled', true)
         const roleId = $(this).parent().attr('data-role-id')
 
         unassignRole(roleId, userId)
             .then(() => $(this).prop('disabled', false))
-            .catch(err => console.log(err))
+            .catch(logAndDisplayError)
     })
 
-    unassignedRolesElem.on('click', '[data-role-action="assign"]', function () {
+    $('#unassignedRolesList').on('click', '[data-role-action="assign"]', function () {
         $(this).prop('disabled', true)
         const roleId = $(this).parent().attr('data-role-id')
 
         assignRole(roleId, userId)
             .then(() => $(this).prop('disabled', false))
-            .catch(err => console.log(err))
+            .catch(logAndDisplayError)
+    })
+
+    $('#invalidateSessionsButton').click(function () {
+        $(this).prop('disabled', true)
+
+        invalidateSessions(userId)
+            .then(() => $(this).prop('disabled', false))
+            .catch(logAndDisplayError)
     })
 }
 
@@ -55,8 +51,8 @@ const loadRoles = () => {
             userRoles = fetchedUserRoles
 
             displayRoles()
-        })
-    }).catch(err => console.log(err))
+        }).catch(logAndDisplayError)
+    }).catch(logAndDisplayError)
 }
 
 const displayRoles = () => {
@@ -106,3 +102,19 @@ const fetchRoles = () => connection.invoke('GetAllRoles')
 const fetchUserRoles = () => connection.invoke('GetUserRoles', userId)
 const assignRole = (roleId, userId) => connection.invoke('AssignRoleToUser', roleId, userId)
 const unassignRole = (roleId, userId) => connection.invoke('UnassignRoleFromUser', roleId, userId)
+const invalidateSessions = userId => connection.invoke('InvalidateUserSessions', userId)
+
+const logAndDisplayError = err => {
+    console.log(err)
+    displayErrorToast(err.message)
+}
+
+const displayErrorToast = message => {
+    $('#errorToast .toast-body').text(message)
+    $('#errorToast').toast('show')
+}
+
+const displayWarningToast = message => {
+    $('#warningToast .toast-body').text(message)
+    $('#warningToast').toast('show')
+}

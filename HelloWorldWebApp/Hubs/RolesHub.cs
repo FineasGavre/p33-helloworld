@@ -86,7 +86,7 @@ namespace HelloWorldWebApp.Hubs
             }
 
             await userManager.AddToRoleAsync(user, role.Name);
-            await DisplayWarning("Role changes will take effect only after the user logs in again.");
+            await DisplayWarning("Role changes will take effect only after the user logs in again. You can invalidate the user's sessions in this page.");
             await Clients.All.SendAsync("UserRoleAdded", userId, role);
         }
 
@@ -128,8 +128,28 @@ namespace HelloWorldWebApp.Hubs
             }
 
             await userManager.RemoveFromRoleAsync(user, role.Name);
-            await DisplayWarning("Role changes will take effect only after the user logs in again.");
+            await DisplayWarning("Role changes will take effect only after the user logs in again. You can invalidate the user's sessions in this page.");
             await Clients.All.SendAsync("UserRoleRemoved", userId, role);
+        }
+
+        /// <summary>
+        /// Invalidate a user's sessions.
+        /// </summary>
+        /// <param name="userId">User id.</param>
+        /// <returns>Task.</returns>
+        [Authorize(Roles = "Administrator")]
+        public async Task InvalidateUserSessions(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                await DisplayError("The requested user does not exist.");
+                return;
+            }
+
+            await userManager.UpdateSecurityStampAsync(user);
+            await DisplayWarning("User session invalidated.");
         }
 
         private async Task DisplayError(string message)

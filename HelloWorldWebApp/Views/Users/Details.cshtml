@@ -40,6 +40,11 @@
         </dd>
     </dl>
 </div>
+<div class="mb-4">
+    <h4>Session Management</h4>
+    <hr />
+    <button id="invalidateSessionsButton">Invalidate User Sessions</button>
+</div>
 <div>
     <h4>Assigned Roles</h4>
     <hr />
@@ -68,7 +73,7 @@
     </div>
     <div id="warningToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; top: 15px; left: 30px;" data-delay="3000">
       <div class="toast-header">
-        <strong class="mr-auto text-danger">Hey listen!</strong>
+        <span class="mr-auto text-warning"><b>Hey listen! </b>You probably should know this.</span>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -82,5 +87,5 @@
         const userId = '@Model.Id'
         const canEditRoles = @User.IsInRole("Administrator").ToString().ToLower()
 	</script>
-    <script type="text/javascript" src="~/js/Users/Index.js"></script>
+    <script type="text/javascript" src="~/js/Users/Index.js" asp-append-version="true"></script>
 }
