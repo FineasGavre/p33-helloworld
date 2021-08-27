@@ -1,4 +1,4 @@
-const connection = new signalR.HubConnectionBuilder().withUrl("/hubs/teammember").build();
+const connection = new signalR.HubConnectionBuilder().withUrl("/hubs/teammember").build()
 
 $(document).ready(() => {
     connection.on('AddedTeamMember', function (teamMember) {

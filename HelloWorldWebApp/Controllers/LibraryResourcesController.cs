@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Data.Models;
+using HelloWorldWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,14 +21,17 @@ namespace HelloWorldWebApp.Controllers
     public class LibraryResourcesController : Controller
     {
         private readonly ApplicationContext context;
+        private readonly IBroadcastService broadcastService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryResourcesController"/> class.
         /// </summary>
         /// <param name="context">DI ApplicationContext.</param>
-        public LibraryResourcesController(ApplicationContext context)
+        /// <param name="broadcastService">DI BroadcastService.</param>
+        public LibraryResourcesController(ApplicationContext context, IBroadcastService broadcastService)
         {
             this.context = context;
+            this.broadcastService = broadcastService;
         }
 
         /// <summary>
@@ -88,6 +92,7 @@ namespace HelloWorldWebApp.Controllers
             {
                 context.Add(libraryResource);
                 await context.SaveChangesAsync();
+                await broadcastService.SendEntityAddedNotification("LibraryResource", libraryResource.Id.ToString());
                 return RedirectToAction(nameof(Index));
             }
 
@@ -140,6 +145,7 @@ namespace HelloWorldWebApp.Controllers
                 {
                     context.Update(libraryResource);
                     await context.SaveChangesAsync();
+                    await broadcastService.SendEntityUpdatedNotification("LibraryResource", libraryResource.Id.ToString());
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -198,6 +204,7 @@ namespace HelloWorldWebApp.Controllers
             var libraryResource = await context.LibraryResources.FindAsync(id);
             context.LibraryResources.Remove(libraryResource);
             await context.SaveChangesAsync();
+            await broadcastService.SendEntityRemovedNotification("LibraryResource", id.ToString());
             return RedirectToAction(nameof(Index));
         }
 

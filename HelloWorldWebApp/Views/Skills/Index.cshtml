@@ -34,7 +34,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr data-entity-id="@item.Id">
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -61,3 +61,8 @@
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/Broadcast/Broadcast.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/Skills/Index.js" asp-append-version="true"></script>
+}

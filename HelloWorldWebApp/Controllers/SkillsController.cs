@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Data.Models;
+using HelloWorldWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,14 +23,17 @@ namespace HelloWorldWebApp.Controllers
     public class SkillsController : Controller
     {
         private readonly ApplicationContext context;
+        private readonly IBroadcastService broadcastService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SkillsController"/> class.
         /// </summary>
         /// <param name="context">DI ApplicationContext.</param>
-        public SkillsController(ApplicationContext context)
+        /// <param name="broadcastService">DI BroadcastService.</param>
+        public SkillsController(ApplicationContext context, IBroadcastService broadcastService)
         {
             this.context = context;
+            this.broadcastService = broadcastService;
         }
 
         /// <summary>
@@ -90,6 +94,7 @@ namespace HelloWorldWebApp.Controllers
             {
                 context.Add(skill);
                 await context.SaveChangesAsync();
+                await broadcastService.SendEntityAddedNotification("Skill", skill.Id.ToString());
                 return RedirectToAction(nameof(Index));
             }
 
@@ -142,6 +147,7 @@ namespace HelloWorldWebApp.Controllers
                 {
                     context.Update(skill);
                     await context.SaveChangesAsync();
+                    await broadcastService.SendEntityUpdatedNotification("Skill", skill.Id.ToString());
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -200,6 +206,7 @@ namespace HelloWorldWebApp.Controllers
             var skill = await context.Skills.FindAsync(id);
             context.Skills.Remove(skill);
             await context.SaveChangesAsync();
+            await broadcastService.SendEntityRemovedNotification("Skill", id.ToString());
             return RedirectToAction(nameof(Index));
         }
 

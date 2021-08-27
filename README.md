@@ -4,7 +4,13 @@
 [View on Heroku](https://helloworldp33.herokuapp.com/)
 
 This is a hello world project.
-Wrote using VIM, ew.
+
+## Development
+### Database Access
+When the environment variable `ASPNETCORE_ENVIRONMENT` has the value `DEVELOPMENT`, the application will use the ConnectionString `LocalPostgresContext` found in `appsettings.json`. Switching the value to `PRODUCTION` will make the application use a database supplied via the `DATABASE_URL` environment variable.
+### Initial User Creation
+When the environment variable `ShouldCreateDefaultUsers` is set, the application will ensure the creation of 2 roles (Operator and Administrator) and create two users that are included in each role. **You should run the application at least once with this variable before starting development.**
+
 
 ## Versioning
 ### On Manual Deploys

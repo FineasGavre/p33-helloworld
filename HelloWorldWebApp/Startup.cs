@@ -84,6 +84,7 @@ namespace HelloWorldWebApp
 
             services.AddScoped<ITeamMemberService, TeamMemberService>();
             services.AddScoped<IWeatherService, WeatherService>();
+            services.AddScoped<IBroadcastService, BroadcastService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -139,6 +140,7 @@ namespace HelloWorldWebApp
             {
                 endpoints.MapHub<TeamMemberHub>("/hubs/teammember");
                 endpoints.MapHub<RolesHub>("/hubs/roles");
+                endpoints.MapHub<BroadcastHub>("/hubs/broadcast");
 
                 endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(

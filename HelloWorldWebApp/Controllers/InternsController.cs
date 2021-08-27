@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Data.Models;
+using HelloWorldWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,14 +23,17 @@ namespace HelloWorldWebApp.Controllers
     public class InternsController : Controller
     {
         private readonly ApplicationContext context;
+        private readonly IBroadcastService broadcastService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InternsController"/> class.
         /// </summary>
         /// <param name="context">DI injected ApplicationContext.</param>
-        public InternsController(ApplicationContext context)
+        /// <param name="broadcastService">DI injected BroadcastService.</param>
+        public InternsController(ApplicationContext context, IBroadcastService broadcastService)
         {
             this.context = context;
+            this.broadcastService = broadcastService;
         }
 
         /// <summary>
@@ -64,6 +68,28 @@ namespace HelloWorldWebApp.Controllers
         }
 
         /// <summary>
+        /// Returns the entity in Json format.
+        /// </summary>
+        /// <param name="id">Id of entity.</param>
+        /// <returns>Json format of entity.</returns>
+        public async Task<IActionResult> DetailsJson(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var intern = await context.Interns
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (intern == null)
+            {
+                return NotFound();
+            }
+
+            return Json(intern);
+        }
+
+        /// <summary>
         /// Display the Create view.
         /// </summary>
         /// <returns>Create View.</returns>
@@ -87,6 +113,7 @@ namespace HelloWorldWebApp.Controllers
             {
                 context.Add(intern);
                 await context.SaveChangesAsync();
+                await broadcastService.SendEntityAddedNotification("Intern", intern.Id.ToString());
                 return RedirectToAction(nameof(Index));
             }
 
@@ -137,6 +164,7 @@ namespace HelloWorldWebApp.Controllers
                 {
                     context.Update(intern);
                     await context.SaveChangesAsync();
+                    await broadcastService.SendEntityUpdatedNotification("Intern", intern.Id.ToString());
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -193,6 +221,7 @@ namespace HelloWorldWebApp.Controllers
             var intern = await context.Interns.FindAsync(id);
             context.Interns.Remove(intern);
             await context.SaveChangesAsync();
+            await broadcastService.SendEntityRemovedNotification("Intern", id.ToString());
             return RedirectToAction(nameof(Index));
         }
 
