@@ -67,6 +67,7 @@ namespace HelloWorldWebApp.Controllers
         /// Display the Create view.
         /// </summary>
         /// <returns>Create View.</returns>
+        [Authorize(Roles = "Operator")]
         public IActionResult Create()
         {
             return View();
@@ -77,6 +78,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="intern">Intern object.</param>
         /// <returns>Adds the entity and returns the Create View.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Birthdate,Email")] Intern intern)
@@ -96,6 +98,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="id">Id of entity to be edited.</param>
         /// <returns>Edit View.</returns>
+        [Authorize(Roles = "Operator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -118,6 +121,7 @@ namespace HelloWorldWebApp.Controllers
         /// <param name="id">Id of entity to be updated.</param>
         /// <param name="intern">Intern object with new values.</param>
         /// <returns>View.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Birthdate,Email")] Intern intern)
@@ -157,6 +161,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="id">Id of entity to be deleted.</param>
         /// <returns>Delete View.</returns>
+        [Authorize(Roles = "Operator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -179,6 +184,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="id">Id of entity to be deleted.</param>
         /// <returns>Delete view.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -16,7 +16,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Main app controller.
     /// </summary>
-    [Authorize(Roles = "Administrator")]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
@@ -59,6 +59,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="addTeamMemberInput">Input model for action.</param>
         /// <returns>HTTP Response status code 200.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPost]
         public IActionResult AddTeamMember([Bind("TeamMemberName")] AddTeamMemberInput addTeamMemberInput)
         {
@@ -72,6 +73,7 @@ namespace HelloWorldWebApp.Controllers
         /// <param name="id">Id of the TeamMember to be updated.</param>
         /// <param name="name">Name of the TeamMember to be updated.</param>
         /// <returns>HTTP Status code 200.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPut]
         public IActionResult UpdateTeamMember(int id, string name)
         {
@@ -84,6 +86,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="id">Id of the TeamMember to be deleted.</param>
         /// <returns>HTTP Status code 200.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpDelete]
         public IActionResult DeleteTeamMember(int id)
         {
@@ -95,6 +98,7 @@ namespace HelloWorldWebApp.Controllers
         /// Privacy action.
         /// </summary>
         /// <returns>Privacy.cshtml view.</returns>
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();

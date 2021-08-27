@@ -4,6 +4,7 @@
 
 using System.Threading.Tasks;
 using HelloWorldWebApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HelloWorldWebApp.Controllers
@@ -11,6 +12,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Controller for the Weather API.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class WeatherController : ControllerBase

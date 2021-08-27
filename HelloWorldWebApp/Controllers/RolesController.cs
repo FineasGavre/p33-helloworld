@@ -15,7 +15,7 @@ namespace HelloWorldWebApp.Controllers
     /// <summary>
     /// Controller for Identity Roles.
     /// </summary>
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;

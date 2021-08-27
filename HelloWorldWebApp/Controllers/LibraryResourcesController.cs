@@ -67,6 +67,7 @@ namespace HelloWorldWebApp.Controllers
         /// Display the Create view.
         /// </summary>
         /// <returns>Create View.</returns>
+        [Authorize(Roles = "Operator")]
         public IActionResult Create()
         {
             ViewData["SkillId"] = new SelectList(context.Skills, "Id", "Id");
@@ -78,6 +79,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="libraryResource">LibraryResource object.</param>
         /// <returns>Adds the entity and returns the Create View.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Recommendation,URL,SkillId")] LibraryResource libraryResource)
@@ -98,6 +100,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="id">Id of entity to be edited.</param>
         /// <returns>Edit View.</returns>
+        [Authorize(Roles = "Operator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -121,6 +124,7 @@ namespace HelloWorldWebApp.Controllers
         /// <param name="id">Id of entity to be updated.</param>
         /// <param name="libraryResource">LibraryResource object with new values.</param>
         /// <returns>View.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Recommendation,URL,SkillId")] LibraryResource libraryResource)
@@ -161,6 +165,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="id">Id of entity to be deleted.</param>
         /// <returns>Delete View.</returns>
+        [Authorize(Roles = "Operator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -184,6 +189,7 @@ namespace HelloWorldWebApp.Controllers
         /// </summary>
         /// <param name="id">Id of entity to be deleted.</param>
         /// <returns>Delete view.</returns>
+        [Authorize(Roles = "Operator")]
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
