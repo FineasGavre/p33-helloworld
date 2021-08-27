@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Hubs;
 using HelloWorldWebApp.Services;
@@ -95,6 +96,8 @@ namespace HelloWorldWebApp
             });
 
             services.AddSignalR();
+
+            EnsureUsersCreated(services).Wait();
         }
 
         /// <summary>
@@ -132,11 +135,65 @@ namespace HelloWorldWebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<TeamMemberHub>("/hubs/teammember");
+                endpoints.MapHub<RolesHub>("/hubs/roles");
+
                 endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private static async Task EnsureUsersCreated(IServiceCollection services)
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+
+            var adminUser = await EnsureUserCreated(userManager, "borys.lebeda@principal33.com", "TzfOh22_FCbjxXQt6U");
+            var operatorUser = await EnsureUserCreated(userManager, "borys.lebeda2@principal33.com", "TzfOh22_FCbjxXQt6U2");
+
+            var adminRole = await EnsureRoleCreated(serviceProvider, "Administrator");
+            var operatorRole = await EnsureRoleCreated(serviceProvider, "Operator");
+
+            await userManager.AddToRoleAsync(adminUser, adminRole.Name);
+            await userManager.AddToRoleAsync(operatorUser, operatorRole.Name);
+
+            var users = await userManager.Users.ToListAsync();
+            Console.WriteLine($"There are {users.Count} users now.");
+        }
+
+        private static async Task<IdentityUser> EnsureUserCreated(UserManager<IdentityUser> userManager, string name, string password)
+        {
+            var adminUser = await userManager.FindByNameAsync(name);
+            if (adminUser == null)
+            {
+                await userManager.CreateAsync(new IdentityUser(name));
+                adminUser = await userManager.FindByNameAsync(name);
+                var tokenChangePassword = await userManager.GeneratePasswordResetTokenAsync(adminUser);
+
+                var result = await userManager.ResetPasswordAsync(adminUser, tokenChangePassword, password);
+
+                if (!adminUser.EmailConfirmed)
+                {
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(adminUser);
+                    await userManager.ConfirmEmailAsync(adminUser, token);
+                }
+            }
+
+            return adminUser;
+        }
+
+        private static async Task<IdentityRole> EnsureRoleCreated(ServiceProvider serviceProvider, string roleName)
+        {
+            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
+            var adminRole = await roleManager.FindByNameAsync(roleName);
+            if (adminRole == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+                adminRole = await roleManager.FindByNameAsync(roleName);
+            }
+
+            return adminRole;
         }
     }
 }
