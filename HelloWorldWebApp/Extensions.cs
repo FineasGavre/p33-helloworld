@@ -59,7 +59,7 @@ namespace HelloWorldWebApp
             EnsureRoleCreated(roleManager, "Operator").Wait();
             EnsureRoleCreated(roleManager, "Administrator").Wait();
 
-            var env = Environment.GetEnvironmentVariable("DefaultAdminUserCredentials");
+            var env = Environment.GetEnvironmentVariable("DEFAULT_ADMIN_USER_CREDENTIALS");
             if (env != null)
             {
                 var adminEmail = env.Split(";")[0];
