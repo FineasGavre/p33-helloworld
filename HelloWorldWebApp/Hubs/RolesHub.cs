@@ -35,10 +35,12 @@ namespace HelloWorldWebApp.Hubs
         /// <returns>Enumerable of Roles.</returns>
         public IEnumerable<IdentityRole> GetAllRoles()
         {
-            using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            return roleManager.Roles;
+                return roleManager.Roles;
+            }
         }
 
         /// <summary>
@@ -48,15 +50,17 @@ namespace HelloWorldWebApp.Hubs
         /// <returns>Enumerable of Roles.</returns>
         public async Task<IEnumerable<IdentityRole>> GetUserRoles(string userId)
         {
-            using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            var user = await userManager.FindByIdAsync(userId);
-            var userRoles = await userManager.GetRolesAsync(user);
-            var roles = await Task.WhenAll(userRoles.Select(x => roleManager.FindByNameAsync(x)));
+                var user = await userManager.FindByIdAsync(userId);
+                var userRoles = await userManager.GetRolesAsync(user);
+                var roles = await Task.WhenAll(userRoles.Select(x => roleManager.FindByNameAsync(x)));
 
-            return roles;
+                return roles;
+            }
         }
 
         /// <summary>
@@ -68,35 +72,37 @@ namespace HelloWorldWebApp.Hubs
         [Authorize(Roles = "Administrator")]
         public async Task AssignRoleToUser(string roleId, string userId)
         {
-            using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
+            using (var scope = serviceProvider.CreateScope())
             {
-                await DisplayError("The requested user does not exist.");
-                return;
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                var user = await userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    await DisplayError("The requested user does not exist.");
+                    return;
+                }
+
+                var role = await roleManager.FindByIdAsync(roleId);
+
+                if (role == null)
+                {
+                    await DisplayError("The requested role does not exist.");
+                    return;
+                }
+
+                if (await userManager.IsInRoleAsync(user, role.Name))
+                {
+                    await DisplayError("The user already has this role.");
+                    return;
+                }
+
+                await userManager.AddToRoleAsync(user, role.Name);
+                await DisplayWarning("Role changes will take effect only after the user logs in again. You can invalidate the user's sessions in this page.");
+                await Clients.All.SendAsync("UserRoleAdded", userId, role);
             }
-
-            var role = await roleManager.FindByIdAsync(roleId);
-
-            if (role == null)
-            {
-                await DisplayError("The requested role does not exist.");
-                return;
-            }
-
-            if (await userManager.IsInRoleAsync(user, role.Name))
-            {
-                await DisplayError("The user already has this role.");
-                return;
-            }
-
-            await userManager.AddToRoleAsync(user, role.Name);
-            await DisplayWarning("Role changes will take effect only after the user logs in again. You can invalidate the user's sessions in this page.");
-            await Clients.All.SendAsync("UserRoleAdded", userId, role);
         }
 
         /// <summary>
@@ -108,41 +114,43 @@ namespace HelloWorldWebApp.Hubs
         [Authorize(Roles = "Administrator")]
         public async Task UnassignRoleFromUser(string roleId, string userId)
         {
-            using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
+            using (var scope = serviceProvider.CreateScope())
             {
-                await DisplayError("The requested user does not exist.");
-                return;
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                var user = await userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    await DisplayError("The requested user does not exist.");
+                    return;
+                }
+
+                var role = await roleManager.FindByIdAsync(roleId);
+
+                if (role == null)
+                {
+                    await DisplayError("The requested role does not exist.");
+                    return;
+                }
+
+                if (!(await userManager.IsInRoleAsync(user, role.Name)))
+                {
+                    await DisplayError("The user does not have this role.");
+                    return;
+                }
+
+                if (role.Name == "Administrator" && (await userManager.GetUsersInRoleAsync("Administrator")).Count == 1)
+                {
+                    await DisplayError("Cannot unassign the last user with Administrator role.");
+                    return;
+                }
+
+                await userManager.RemoveFromRoleAsync(user, role.Name);
+                await DisplayWarning("Role changes will take effect only after the user logs in again. You can invalidate the user's sessions in this page.");
+                await Clients.All.SendAsync("UserRoleRemoved", userId, role);
             }
-
-            var role = await roleManager.FindByIdAsync(roleId);
-
-            if (role == null)
-            {
-                await DisplayError("The requested role does not exist.");
-                return;
-            }
-
-            if (!(await userManager.IsInRoleAsync(user, role.Name)))
-            {
-                await DisplayError("The user does not have this role.");
-                return;
-            }
-
-            if (role.Name == "Administrator" && (await userManager.GetUsersInRoleAsync("Administrator")).Count == 1)
-            {
-                await DisplayError("Cannot unassign the last user with Administrator role.");
-                return;
-            }
-
-            await userManager.RemoveFromRoleAsync(user, role.Name);
-            await DisplayWarning("Role changes will take effect only after the user logs in again. You can invalidate the user's sessions in this page.");
-            await Clients.All.SendAsync("UserRoleRemoved", userId, role);
         }
 
         /// <summary>
@@ -153,20 +161,22 @@ namespace HelloWorldWebApp.Hubs
         [Authorize(Roles = "Administrator")]
         public async Task InvalidateUserSessions(string userId)
         {
-            using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
+            using (var scope = serviceProvider.CreateScope())
             {
-                await DisplayError("The requested user does not exist.");
-                return;
-            }
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            await userManager.UpdateSecurityStampAsync(user);
-            await DisplayWarning("User session invalidated.");
+                var user = await userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    await DisplayError("The requested user does not exist.");
+                    return;
+                }
+
+                await userManager.UpdateSecurityStampAsync(user);
+                await DisplayWarning("User session invalidated.");
+            }
         }
 
         private async Task DisplayError(string message)
