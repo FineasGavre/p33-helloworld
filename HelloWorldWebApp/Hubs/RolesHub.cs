@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HelloWorldWebApp.Hubs
 {
@@ -17,18 +18,15 @@ namespace HelloWorldWebApp.Hubs
     /// </summary>
     public class RolesHub : Hub
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IServiceProvider serviceProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RolesHub"/> class.
         /// </summary>
-        /// <param name="userManager">DI UserManager.</param>
-        /// <param name="roleManager">DI RoleManager.</param>
-        public RolesHub(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        /// <param name="serviceProvider">DI ServiceProvider.</param>
+        public RolesHub(IServiceProvider serviceProvider)
         {
-            this.userManager = userManager;
-            this.roleManager = roleManager;
+            this.serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -37,6 +35,9 @@ namespace HelloWorldWebApp.Hubs
         /// <returns>Enumerable of Roles.</returns>
         public IEnumerable<IdentityRole> GetAllRoles()
         {
+            using var scope = serviceProvider.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
             return roleManager.Roles;
         }
 
@@ -47,6 +48,10 @@ namespace HelloWorldWebApp.Hubs
         /// <returns>Enumerable of Roles.</returns>
         public async Task<IEnumerable<IdentityRole>> GetUserRoles(string userId)
         {
+            using var scope = serviceProvider.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
             var user = await userManager.FindByIdAsync(userId);
             var userRoles = await userManager.GetRolesAsync(user);
             var roles = await Task.WhenAll(userRoles.Select(x => roleManager.FindByNameAsync(x)));
@@ -63,6 +68,10 @@ namespace HelloWorldWebApp.Hubs
         [Authorize(Roles = "Administrator")]
         public async Task AssignRoleToUser(string roleId, string userId)
         {
+            using var scope = serviceProvider.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
             var user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
@@ -99,6 +108,10 @@ namespace HelloWorldWebApp.Hubs
         [Authorize(Roles = "Administrator")]
         public async Task UnassignRoleFromUser(string roleId, string userId)
         {
+            using var scope = serviceProvider.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
             var user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
@@ -140,6 +153,10 @@ namespace HelloWorldWebApp.Hubs
         [Authorize(Roles = "Administrator")]
         public async Task InvalidateUserSessions(string userId)
         {
+            using var scope = serviceProvider.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
             var user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
