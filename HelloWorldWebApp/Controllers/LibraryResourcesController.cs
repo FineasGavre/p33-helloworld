@@ -21,14 +21,14 @@ namespace HelloWorldWebApp.Controllers
     public class LibraryResourcesController : Controller
     {
         private readonly ApplicationContext context;
-        private readonly IBroadcastService broadcastService;
+        private readonly IClientNotificationService broadcastService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LibraryResourcesController"/> class.
         /// </summary>
         /// <param name="context">DI ApplicationContext.</param>
         /// <param name="broadcastService">DI BroadcastService.</param>
-        public LibraryResourcesController(ApplicationContext context, IBroadcastService broadcastService)
+        public LibraryResourcesController(ApplicationContext context, IClientNotificationService broadcastService)
         {
             this.context = context;
             this.broadcastService = broadcastService;

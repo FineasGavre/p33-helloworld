@@ -1,4 +1,4 @@
-﻿// <copyright file="IBroadcastService.cs" company="PRINCIPAL33">
+﻿// <copyright file="IClientNotificationService.cs" company="PRINCIPAL33">
 // Copyright (c) PRINCIPAL33. All rights reserved.
 // </copyright>
 
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace HelloWorldWebApp.Services
 {
     /// <summary>
-    /// Interface for the Broadcast Service.
+    /// Interface for the Client Notifications Service.
     /// </summary>
-    public interface IBroadcastService
+    public interface IClientNotificationService
     {
         /// <summary>
         /// Sends a notification to all clients when an entity is added.

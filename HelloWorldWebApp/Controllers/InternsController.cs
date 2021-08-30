@@ -23,14 +23,14 @@ namespace HelloWorldWebApp.Controllers
     public class InternsController : Controller
     {
         private readonly ApplicationContext context;
-        private readonly IBroadcastService broadcastService;
+        private readonly IClientNotificationService broadcastService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InternsController"/> class.
         /// </summary>
         /// <param name="context">DI injected ApplicationContext.</param>
         /// <param name="broadcastService">DI injected BroadcastService.</param>
-        public InternsController(ApplicationContext context, IBroadcastService broadcastService)
+        public InternsController(ApplicationContext context, IClientNotificationService broadcastService)
         {
             this.context = context;
             this.broadcastService = broadcastService;
