@@ -12,6 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
+        "DEFAULT_ADMIN_USER_CREDENTIALS": "admin@acme.com;Password1234!",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
