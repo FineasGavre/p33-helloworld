@@ -82,6 +82,7 @@ namespace HelloWorldWebApp
             {
                 await userManager.CreateAsync(new IdentityUser(name));
                 user = await userManager.FindByNameAsync(name);
+                await userManager.SetEmailAsync(user, name);
                 var tokenChangePassword = await userManager.GeneratePasswordResetTokenAsync(user);
                 await userManager.ResetPasswordAsync(user, tokenChangePassword, password);
 
