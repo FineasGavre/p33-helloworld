@@ -17,13 +17,13 @@ namespace HelloWorldWebApp.Services.Impl
     /// </summary>
     public class BroadcastService : IBroadcastService
     {
-        private readonly IHubContext<BroadcastHub> broadcastHub;
+        private readonly IHubContext<ClientNotificationHub> broadcastHub;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BroadcastService"/> class.
         /// </summary>
         /// <param name="broadcastHub">DI injected BroadcastHub.</param>
-        public BroadcastService(IHubContext<BroadcastHub> broadcastHub)
+        public BroadcastService(IHubContext<ClientNotificationHub> broadcastHub)
         {
             this.broadcastHub = broadcastHub;
         }

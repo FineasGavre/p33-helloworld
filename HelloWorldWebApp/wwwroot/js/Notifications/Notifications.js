@@ -1,4 +1,4 @@
-﻿const broadcastConnection = new signalR.HubConnectionBuilder().withUrl("/hubs/broadcast").build()
+﻿const broadcastConnection = new signalR.HubConnectionBuilder().withUrl("/hubs/notifications").build()
 
 const eventHandlerStorage = {
     'EntityAdded': [],
@@ -9,7 +9,7 @@ const eventHandlerStorage = {
 $(document).ready(() => {
     broadcastConnection.start()
         .then(() => {
-           console.log("Connected to BroadcastHub.")
+           console.log("Connected to ClientNotificationsHub.")
         })
         .catch(err => {
             console.log(err)

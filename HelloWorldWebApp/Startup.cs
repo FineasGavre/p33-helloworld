@@ -135,7 +135,7 @@ namespace HelloWorldWebApp
             {
                 endpoints.MapHub<TeamMemberHub>("/hubs/teammember");
                 endpoints.MapHub<RolesHub>("/hubs/roles");
-                endpoints.MapHub<BroadcastHub>("/hubs/broadcast");
+                endpoints.MapHub<ClientNotificationHub>("/hubs/notifications");
 
                 endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
