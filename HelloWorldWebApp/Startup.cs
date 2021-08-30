@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
+using HelloWorldWebApp.Helpers;
 using HelloWorldWebApp.Hubs;
 using HelloWorldWebApp.Services;
 using HelloWorldWebApp.Services.Impl;
@@ -59,18 +60,7 @@ namespace HelloWorldWebApp
                 else
                 {
                     var connectionUri = Environment.GetEnvironmentVariable("DATABASE_URL");
-                    connectionUri = connectionUri.Replace("postgres://", string.Empty);
-
-                    var pgUserPass = connectionUri.Split("@")[0];
-                    var pgHostPortDb = connectionUri.Split("@")[1];
-                    var pgHostPort = pgHostPortDb.Split("/")[0];
-                    var pgDb = pgHostPortDb.Split("/")[1];
-                    var pgUser = pgUserPass.Split(":")[0];
-                    var pgPass = pgUserPass.Split(":")[1];
-                    var pgHost = pgHostPort.Split(":")[0];
-                    var pgPort = pgHostPort.Split(":")[1];
-
-                    connectionString = $"Host={pgHost};Port={pgPort};Username={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=true";
+                    connectionString = PostgresConnectionStringConverter.ConvertPostgresUriToNpgsqlConnectionString(connectionUri);
                 }
 
                 options.UseNpgsql(connectionString);
