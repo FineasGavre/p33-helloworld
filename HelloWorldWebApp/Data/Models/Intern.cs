@@ -2,8 +2,10 @@
 // Copyright (c) PRINCIPAL33. All rights reserved.
 // </copyright>
 
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace HelloWorldWebApp.Data.Models
 {
@@ -25,6 +27,7 @@ namespace HelloWorldWebApp.Data.Models
         /// <summary>
         /// Gets or sets the Birthdate.
         /// </summary>
+        [DataType(DataType.Date)]
         public DateTime Birthdate { get; set; }
 
         /// <summary>
