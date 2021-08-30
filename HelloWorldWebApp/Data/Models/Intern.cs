@@ -2,10 +2,10 @@
 // Copyright (c) PRINCIPAL33. All rights reserved.
 // </copyright>
 
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HelloWorldWebApp.Data.Models
 {
