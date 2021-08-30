@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HelloWorldWebApp.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -17,18 +18,16 @@ namespace HelloWorldWebApp.Hubs
     /// </summary>
     public class RolesHub : Hub
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IUserService userService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RolesHub"/> class.
         /// </summary>
         /// <param name="userManager">DI UserManager.</param>
         /// <param name="roleManager">DI RoleManager.</param>
-        public RolesHub(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public RolesHub(IUserService userService)
         {
-            this.userManager = userManager;
-            this.roleManager = roleManager;
+            this.userService = userService;
         }
 
         /// <summary>
@@ -37,7 +36,7 @@ namespace HelloWorldWebApp.Hubs
         /// <returns>Enumerable of Roles.</returns>
         public IEnumerable<IdentityRole> GetAllRoles()
         {
-            return roleManager.Roles;
+            return userService.GetAllRoles();
         }
 
         /// <summary>
@@ -47,14 +46,10 @@ namespace HelloWorldWebApp.Hubs
         /// <returns>Enumerable of Roles.</returns>
         public async Task<IEnumerable<IdentityRole>> GetUserRoles(string userId)
         {
-            var user = await userManager.FindByIdAsync(userId);
-            var userRoles = await userManager.GetRolesAsync(user);
-            var roles = await Task.WhenAll(userRoles.Select(x => roleManager.FindByNameAsync(x)));
-
-            return roles;
+            return await userService.GetUserRoles(userId);
         }
 
-        /// <summary>
+/*        /// <summary>
         /// Assigns a user to a role.
         /// </summary>
         /// <param name="roleId">Role id.</param>
@@ -63,29 +58,7 @@ namespace HelloWorldWebApp.Hubs
         [Authorize(Roles = "Administrator")]
         public async Task AssignRoleToUser(string roleId, string userId)
         {
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                await DisplayError("The requested user does not exist.");
-                return;
-            }
-
-            var role = await roleManager.FindByIdAsync(roleId);
-
-            if (role == null)
-            {
-                await DisplayError("The requested role does not exist.");
-                return;
-            }
-
-            if (await userManager.IsInRoleAsync(user, role.Name))
-            {
-                await DisplayError("The user already has this role.");
-                return;
-            }
-
-            await userManager.AddToRoleAsync(user, role.Name);
+            
             await DisplayWarning("Role changes will take effect only after the user logs in again. You can invalidate the user's sessions in this page.");
             await Clients.All.SendAsync("UserRoleAdded", userId, role);
         }
@@ -150,7 +123,7 @@ namespace HelloWorldWebApp.Hubs
 
             await userManager.UpdateSecurityStampAsync(user);
             await DisplayWarning("User session invalidated.");
-        }
+        }*/
 
         private async Task DisplayError(string message)
         {

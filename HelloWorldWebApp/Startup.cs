@@ -75,6 +75,7 @@ namespace HelloWorldWebApp
             services.AddScoped<ITeamMemberService, TeamMemberService>();
             services.AddScoped<IWeatherService, WeatherService>();
             services.AddScoped<IClientNotificationService, ClientNotificationService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddSwaggerGen(c =>
             {
