@@ -2,10 +2,6 @@
 // Copyright (c) PRINCIPAL33. All rights reserved.
 // </copyright>
 
-using System;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
 using HelloWorldWebApp.Data;
 using HelloWorldWebApp.Helpers;
 using HelloWorldWebApp.Hubs;
@@ -19,6 +15,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace HelloWorldWebApp
 {
@@ -48,23 +47,24 @@ namespace HelloWorldWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<ApplicationContext>(options =>
-            {
-                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                string connectionString;
-
-                if (env == "Development")
+            services.AddDbContext<ApplicationContext>(
+                options =>
                 {
-                    connectionString = Configuration.GetConnectionString("LocalPostgresContext");
-                }
-                else
-                {
-                    var connectionUri = Environment.GetEnvironmentVariable("DATABASE_URL");
-                    connectionString = PostgresConnectionStringConverter.ConvertPostgresUriToNpgsqlConnectionString(connectionUri);
-                }
+                    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                    string connectionString;
 
-                options.UseNpgsql(connectionString);
-            });
+                    if (env == "Development")
+                    {
+                        connectionString = Configuration.GetConnectionString("LocalPostgresContext");
+                    }
+                    else
+                    {
+                        var connectionUri = Environment.GetEnvironmentVariable("DATABASE_URL");
+                        connectionString = PostgresConnectionStringConverter.ConvertPostgresUriToNpgsqlConnectionString(connectionUri);
+                    }
+
+                    options.UseNpgsql(connectionString);
+                }, ServiceLifetime.Transient);
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
